@@ -28,26 +28,32 @@ export default function ProfilePage() {
         </h1>
 
         {/* Tab switcher */}
-        <div className="flex rounded-full border border-gray-200 overflow-hidden w-full max-w-2xl mx-auto">
+        <div className="bg-[#f5f5f5] rounded-xl p-1 flex items-center w-full max-w-2xl mx-auto">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 px-2.5 py-[5.5px] rounded-[10px] text-sm font-medium transition-all ${
               activeTab === 'overview'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white text-[#0a0a0a] shadow-sm'
+                : 'text-[#0a0a0a] hover:bg-white/50'
             }`}
           >
-            📋 Overview of My SE Skills
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 3v18h18"/><path d="M7 16h2"/><path d="M11 11h2"/><path d="M15 6h2"/>
+            </svg>
+            Overview of My SE Skills
           </button>
           <button
             onClick={() => setActiveTab('strengths')}
-            className={`flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-2 px-2.5 py-[5.5px] rounded-[10px] text-sm font-medium transition-all ${
               activeTab === 'strengths'
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white text-[#0a0a0a] shadow-sm'
+                : 'text-[#0a0a0a] hover:bg-white/50'
             }`}
           >
-            🏠 My Strengths and Areas for Growth
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            My Strengths and Areas for Growth
           </button>
         </div>
 
@@ -91,12 +97,18 @@ export default function ProfilePage() {
                             {result.status}
                           </span>
                         </div>
-                        <Link
-                          href="/narrative"
-                          className="text-sm font-medium text-[#2563eb] border border-[#2563eb] px-4 py-1.5 rounded-full hover:bg-blue-50 transition-colors"
-                        >
-                          See insights →
-                        </Link>
+                        {skill.id === 'emotion-regulation' ? (
+                          <Link
+                            href="/narrative"
+                            className="text-sm font-medium text-[#2563eb] border border-[#2563eb] px-4 py-1.5 rounded-full hover:bg-blue-50 transition-colors"
+                          >
+                            See insights →
+                          </Link>
+                        ) : (
+                          <span className="text-sm font-medium text-gray-300 border border-gray-200 px-4 py-1.5 rounded-full cursor-not-allowed">
+                            See insights →
+                          </span>
+                        )}
                       </div>
                     ))}
                     {skill.results.length > 1 && (
@@ -166,8 +178,8 @@ function Stars({ status }: { status: SkillStatus }) {
   const count = STAR_COUNT[status]
   return (
     <div className="flex gap-1 justify-center mt-1">
-      {[1, 2, 3, 4].map((i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i <= count ? '#3b82f6' : '#e5e7eb'}>
+      {Array.from({ length: count }).map((_, i) => (
+        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#3b82f6">
           <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z" />
         </svg>
       ))}

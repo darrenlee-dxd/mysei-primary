@@ -16,146 +16,164 @@ export default function NarrativePage() {
   }, [userName, router])
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#fdfdfd]">
       <NavBar />
 
-      <main className="max-w-[1128px] mx-auto px-4 py-10">
+      <main className="max-w-[1128px] mx-auto px-4 py-10 flex flex-col gap-16">
+
         {/* Breadcrumb */}
-        <nav className="text-sm text-gray-500 mb-4">
-          <Link href="/profile" className="hover:underline">Strengths and Growth Areas</Link>
-          <span className="mx-2">›</span>
-          <span className="text-gray-800">Emotion regulation</span>
+        <nav className="text-sm text-gray-500 flex items-center gap-1">
+          <Link href="/profile" className="hover:underline text-[#737373]">Strengths and Growth Areas</Link>
+          <span className="text-gray-400">›</span>
+          <span className="text-[#0a0a0a]">Emotion regulation</span>
         </nav>
-        <Link href="/profile" className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 mb-8">
-          ← Back
-        </Link>
 
         {/* Hero section */}
-        <div className="flex flex-col items-center gap-6 text-center mb-12">
-          <h1 className="text-2xl font-semibold text-gray-900 max-w-lg leading-snug">
-            You have just completed a survey about your<br />
-            <span className="text-[#2563eb]">Emotion Regulation</span> skill
+        <div className="flex flex-col items-center gap-6 text-center max-w-[880px] mx-auto w-full">
+          <h1 className="text-[30px] font-semibold text-[#211f26] tracking-tight">
+            Emotion Regulation
           </h1>
 
-          <div className="relative w-40 h-40">
-            <Image src="/assets/narrative-cactus.png" alt="Character" fill className="object-contain" />
+          <div className="relative h-[250px] w-[342px]">
+            <Image src="/assets/narrative-hero-char.png" alt="Emotion Regulation character" fill className="object-contain" />
           </div>
 
-          <span className="px-5 py-2 bg-[#dbeafe] text-[#1e40af] rounded-full text-sm font-medium">
+          <span className="px-6 py-3 bg-[#cffafe] text-[#211f26] rounded-full text-base font-semibold">
             Starting out
           </span>
 
-          <p className="text-base text-gray-700 max-w-xl leading-relaxed">
+          <p className="text-lg text-[#171717]">
             From your responses, you are{' '}
-            <strong>learning how to manage your feelings.</strong>
+            <strong className="font-semibold">learning how to manage your feelings.</strong>
           </p>
 
-          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 max-w-xl w-full flex items-start gap-4 text-left">
-            <div className="flex-1">
-              <p className="text-sm text-gray-700 leading-relaxed">
-                <strong>Emotion Regulation</strong> is about understanding and managing your feelings.
-                When you can manage your feelings, you stay in control of what you say and do
-                even when the situation is difficult.
-              </p>
-            </div>
-            <div className="relative w-16 h-16 shrink-0">
-              <Image src="/assets/skill-er.png" alt="Emotion Regulation" fill className="object-contain" />
+          {/* Summary card */}
+          <div className="bg-[#dbeafe] rounded-3xl h-[134px] flex items-center justify-between px-8 w-full overflow-hidden">
+            <p className="text-base text-[#171717] leading-6 flex-1 text-left">
+              <strong className="font-semibold">Emotion Regulation</strong>
+              {' '}is about understanding and managing your feelings.{' '}
+              When you can manage your feelings, you stay in control of what you say and do even when the situation is difficult.
+            </p>
+            <div className="relative shrink-0 w-[160px] h-[160px]">
+              <Image src="/assets/survey-er-v2.png" alt="Emotion Regulation" fill className="object-contain" />
             </div>
           </div>
         </div>
 
-        <hr className="border-gray-100 mb-12" />
+        <div className="max-w-[880px] mx-auto w-full h-px bg-[#d0cdd7]" />
 
-        {/* Growth tips */}
-        <div className="flex flex-col gap-8 mb-12">
-          <h2 className="text-2xl font-semibold text-gray-900 text-center">
+        {/* How can you grow */}
+        <div className="flex flex-col gap-10 max-w-[880px] mx-auto w-full">
+          <h2 className="text-2xl font-semibold text-[#211f26] text-center tracking-tight">
             How can you grow in this skill?
           </h2>
 
-          <GrowthTip
-            tip="Be aware of how your body feels when you are happy, sad, or angry — this can help you name your feelings."
-            speechBubble="Smile and laugh, dance to music, heartbeat faster, shout at others."
-            character="/assets/narrative-char2.png"
-            bg="bg-[#fef9c3]"
-          />
+          <div className="flex flex-col items-start w-full">
+            {/* Tip 1 — offset right */}
+            <div className="pr-16 w-full">
+              <div className="bg-[#fef3c7] rounded-3xl p-10 flex flex-col gap-6 w-full">
+                <div className="flex items-start gap-4">
+                  <span className="text-lg shrink-0">💡</span>
+                  <p className="text-xl font-semibold text-[#0a0a0a] leading-6">
+                    Be aware of how your body feels when you are happy, sad, or angry — this can help you name your feelings.
+                  </p>
+                </div>
+                <div className="flex items-center justify-end gap-6">
+                  {/* Speech bubble */}
+                  <div className="relative">
+                    <div className="bg-white rounded-3xl p-6 w-[287px]">
+                      <p className="text-lg font-medium text-[#211f26] leading-relaxed">
+                        Smile and laugh, dance to music, heartbeat faster, shout at others.
+                      </p>
+                    </div>
+                    {/* Arrow pointing right */}
+                    <div className="absolute right-[-10px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-l-[10px] border-l-white" />
+                  </div>
+                  <div className="relative h-[250px] w-[312px] shrink-0">
+                    <Image src="/assets/narrative-tip1-char.png" alt="Tip character" fill className="object-contain" />
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <GrowthTip
-            tip="Talk to a trusted adult, like a parent or teacher, when you feel unsure about your feelings."
-            speechBubble="Tell your parents what you are going through."
-            character="/assets/narrative-char4.png"
-            bg="bg-[#dbeafe]"
-            reverse
-          />
+            {/* Connector path */}
+            <div className="h-[80px] w-full flex items-center justify-center opacity-20">
+              <svg width="400" height="80" viewBox="0 0 400 80" fill="none">
+                <path d="M320 0 C320 40, 80 40, 80 80" stroke="#7C3AED" strokeWidth="3" fill="none" strokeDasharray="8 4"/>
+              </svg>
+            </div>
+
+            {/* Tip 2 — offset left */}
+            <div className="pl-16 w-full">
+              <div className="bg-[#e0f2fe] rounded-3xl p-10 flex flex-col gap-6 w-full">
+                <div className="flex items-start gap-4">
+                  <span className="text-lg shrink-0">💡</span>
+                  <p className="text-xl font-semibold text-[#0a0a0a] leading-6">
+                    Talk to a trusted adult, like a parent or teacher, when you feel unsure about your feelings.
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="relative h-[232px] w-[384px] shrink-0">
+                    <Image src="/assets/narrative-tip2-char.png" alt="Tip character" fill className="object-contain" />
+                  </div>
+                  {/* Speech bubble */}
+                  <div className="relative">
+                    <div className="absolute left-[-10px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-r-[10px] border-r-white" />
+                    <div className="bg-white rounded-3xl p-6 w-[321px]">
+                      <p className="text-lg font-medium text-[#211f26] leading-relaxed">
+                        Tell your parents what you are going through.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Find more strategies */}
-        <div className="bg-gray-50 rounded-2xl p-6 flex items-center gap-6 mb-12">
-          <div className="relative w-20 h-20 shrink-0">
-            <Image src="/assets/skill-er.png" alt="target" fill className="object-contain" />
+        <div className="max-w-[880px] mx-auto w-full flex items-center gap-6">
+          <div className="relative w-[200px] h-[200px] shrink-0">
+            <Image src="/assets/narrative-strategies-img.png" alt="Strategies" fill className="object-contain" />
           </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 mb-1">Find more strategies that fit you</h3>
+          <div className="flex flex-col gap-6">
+            <h3 className="text-[30px] font-semibold text-[#0a0a0a] tracking-tight leading-snug">
+              Find more strategies that fit you
+            </h3>
+            <a
+              href="#"
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-[#1d4ed8] text-white text-base font-medium hover:bg-blue-800 transition-colors w-fit"
+            >
+              See more strategies
+              <span>↗</span>
+            </a>
           </div>
-          <a
-            href="#"
-            className="px-5 py-2.5 rounded-full bg-[#2563eb] text-white text-sm font-medium hover:bg-blue-700 transition-colors whitespace-nowrap"
-          >
-            See more strategies ↗
-          </a>
         </div>
 
-        <hr className="border-gray-100 mb-12" />
+        <div className="max-w-[880px] mx-auto w-full h-px bg-[#d0cdd7]" />
 
-        {/* Next up */}
-        <div className="flex flex-col gap-6">
-          <h2 className="text-2xl font-semibold text-gray-900 text-center">Next up for you</h2>
-          <div className="grid grid-cols-2 gap-4">
+        {/* Next up for you */}
+        <div className="flex flex-col gap-10 max-w-[880px] mx-auto w-full">
+          <h2 className="text-2xl font-semibold text-[#211f26] text-center tracking-tight">
+            Next up for you
+          </h2>
+          <div className="grid grid-cols-2 gap-6">
             <NextSurveyCard
               title="Emotion regulation"
               description="Recognise, express, and regulate your emotions appropriately"
-              image="/assets/survey-card-er.png"
+              image="/assets/survey-er-v2.png"
               href="/survey/intro"
             />
             <NextSurveyCard
               title="Self-control"
               description="Control your actions to avoid excessive, addictive or other inappropriate behaviours"
-              image="/assets/survey-card-sc.png"
-              href="/survey/intro"
+              image="/assets/survey-sc.png"
+              href=""
             />
           </div>
         </div>
-      </main>
-    </div>
-  )
-}
 
-function GrowthTip({
-  tip, speechBubble, character, bg, reverse,
-}: {
-  tip: string
-  speechBubble: string
-  character: string
-  bg: string
-  reverse?: boolean
-}) {
-  return (
-    <div className={`${bg} rounded-2xl p-6`}>
-      <div className={`flex items-center gap-6 ${reverse ? 'flex-row-reverse' : ''}`}>
-        <div className="flex-1">
-          <div className="flex items-start gap-3 mb-4">
-            <span className="text-lg">💡</span>
-            <p className="text-base text-gray-700 leading-relaxed">{tip}</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="bg-white rounded-2xl px-4 py-3 text-sm text-gray-600 max-w-[180px] shadow-sm">
-            {speechBubble}
-          </div>
-          <div className="relative w-24 h-24">
-            <Image src={character} alt="" fill className="object-contain" />
-          </div>
-        </div>
-      </div>
+      </main>
     </div>
   )
 }
@@ -169,23 +187,31 @@ function NextSurveyCard({
   href: string
 }) {
   return (
-    <div className="rounded-2xl border border-gray-200 p-6 flex justify-between items-center gap-4 bg-white">
-      <div className="flex flex-col gap-3 flex-1">
-        <div>
-          <h4 className="font-semibold text-gray-900">{title}</h4>
-          <p className="text-sm text-gray-500 mt-1">{description}</p>
+    <div className="bg-[#eff6ff] rounded-3xl p-8 flex justify-between items-start gap-4 h-[291px] overflow-hidden relative">
+      <div className="flex flex-col justify-between h-full w-[257px] shrink-0">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <h4 className="text-xl font-semibold text-[#0a0a0a] truncate">{title}</h4>
+            <p className="text-base text-[#404040] leading-6 line-clamp-3">{description}</p>
+          </div>
+          <p className="text-lg font-medium text-[#65636d] flex items-center gap-2">
+            <span className="text-base">📋</span> 6 items
+          </p>
         </div>
-        <p className="text-xs text-gray-400 flex items-center gap-1">
-          <span>📋</span> 6 items
-        </p>
-        <Link
-          href={href}
-          className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-[#171717] text-white text-sm font-medium w-fit hover:bg-[#383838] transition-colors"
-        >
-          Start survey
-        </Link>
+        {href ? (
+          <Link
+            href={href}
+            className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-[#171717] text-white text-base font-medium w-fit hover:bg-[#383838] transition-colors"
+          >
+            Start survey
+          </Link>
+        ) : (
+          <span className="inline-flex items-center justify-center px-8 py-3 rounded-full bg-[#d4d4d4] text-white text-base font-medium w-fit cursor-not-allowed">
+            Start survey
+          </span>
+        )}
       </div>
-      <div className="relative w-24 h-24 shrink-0">
+      <div className="absolute right-8 top-8 w-[160px] h-[160px]">
         <Image src={image} alt={title} fill className="object-contain" />
       </div>
     </div>

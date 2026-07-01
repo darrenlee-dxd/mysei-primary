@@ -1,15 +1,34 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { NavBar } from '@/components/nav/NavBar'
 import { useSession } from '@/store/session'
 
+const CAROUSEL_CARDS = [
+  {
+    title: 'Emotion regulation',
+    description: 'Recognise, express, and regulate your emotions appropriately',
+    image: '/assets/survey-er-v2.png',
+  },
+  {
+    title: 'Self-control',
+    description: 'Control your actions to avoid excessive, addictive or other inappropriate behaviours',
+    image: '/assets/survey-sc.png',
+  },
+  {
+    title: 'Self-motivation',
+    description: 'Believe in yourself and your abilities and strive to improve yourself to achieve your goals and potential',
+    image: '/assets/survey-sm.png',
+  },
+]
+
 export default function Dashboard() {
   const userName = useSession((s) => s.userName)
   const router = useRouter()
+  const [carouselIdx, setCarouselIdx] = useState(0)
 
   useEffect(() => {
     if (!userName) router.replace('/')
@@ -37,25 +56,76 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* New surveys */}
+        {/* New surveys carousel */}
         <section>
           <h3 className="text-xl font-semibold text-gray-800 mb-4">New surveys</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <SurveyCard
-              title="Emotion regulation"
-              description="Recognise, express, and regulate your emotions appropriately"
-              items={6}
-              image="/assets/survey-card-er.png"
-              href="/survey/intro"
-              highlight
-            />
-            <SurveyCard
-              title="Self-control"
-              description="Control your actions to avoid excessive, addictive or other inappropriate behaviours"
-              items={6}
-              image="/assets/survey-card-sc.png"
-              href="/survey/intro"
-            />
+          <div className="flex items-center gap-4">
+            {/* Left arrow */}
+            <button
+              onClick={() => setCarouselIdx((i) => Math.max(0, i - 1))}
+              disabled={carouselIdx === 0}
+              className="w-10 h-10 rounded-full bg-[#171717] flex items-center justify-center shrink-0 disabled:opacity-30 hover:bg-[#383838] transition-colors"
+              aria-label="Previous"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+
+            {/* Cards track */}
+            <div className="flex-1 overflow-hidden relative">
+              <div
+                className="flex gap-4 transition-transform duration-300 ease-in-out"
+                style={{ transform: `translateX(calc(-${carouselIdx} * (460px + 16px)))` }}
+              >
+                {CAROUSEL_CARDS.map((card) => (
+                  <div
+                    key={card.title}
+                    className="bg-[#eff6ff] rounded-3xl p-6 shrink-0 w-[460px] h-[200px] flex items-center relative overflow-hidden"
+                  >
+                    <div className="flex flex-col gap-4 w-[300px]">
+                      <div className="flex flex-col gap-2">
+                        <h4 className="font-semibold text-[#0a0a0a]">{card.title}</h4>
+                        <p className="text-sm text-[#404040] leading-6">{card.description}</p>
+                      </div>
+                      <p className="text-sm font-medium text-[#65636d] flex items-center gap-2">
+                        <span className="text-sm">📋</span> 6 items
+                      </p>
+                      {card.title === 'Emotion regulation' ? (
+                        <Link
+                          href="/survey/intro"
+                          className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-[#171717] text-white text-sm font-medium w-fit hover:bg-[#383838] transition-colors"
+                        >
+                          Start survey
+                        </Link>
+                      ) : (
+                        <span className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-[#d4d4d4] text-white text-sm font-medium w-fit cursor-not-allowed">
+                          Start survey
+                        </span>
+                      )}
+                    </div>
+                    {/* Illustration */}
+                    <div className="absolute right-8 top-1/2 -translate-y-1/2 w-[100px] h-[100px]">
+                      <Image src={card.image} alt={card.title} fill className="object-contain" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Right fade gradient */}
+              <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+            </div>
+
+            {/* Right arrow */}
+            <button
+              onClick={() => setCarouselIdx((i) => Math.min(CAROUSEL_CARDS.length - 1, i + 1))}
+              disabled={carouselIdx === CAROUSEL_CARDS.length - 1}
+              className="w-10 h-10 rounded-full bg-[#171717] flex items-center justify-center shrink-0 disabled:opacity-30 hover:bg-[#383838] transition-colors"
+              aria-label="Next"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
           </div>
         </section>
 
@@ -67,7 +137,7 @@ export default function Dashboard() {
               title="Surveys"
               description="Assess your SE competencies"
               image="/assets/explore-surveys.png"
-              href="/survey/intro"
+              href="/surveys"
               buttonLabel="See surveys"
               bg="bg-[#dbeafe]"
             />
@@ -86,39 +156,6 @@ export default function Dashboard() {
   )
 }
 
-function SurveyCard({
-  title, description, items, image, href, highlight,
-}: {
-  title: string
-  description: string
-  items: number
-  image: string
-  href: string
-  highlight?: boolean
-}) {
-  return (
-    <div className={`rounded-2xl border border-gray-200 p-6 flex justify-between items-center gap-4 ${highlight ? 'bg-white shadow-sm' : 'bg-[#f8faff]'}`}>
-      <div className="flex flex-col gap-3 flex-1">
-        <div>
-          <h4 className="font-semibold text-gray-900">{title}</h4>
-          <p className="text-sm text-gray-500 mt-1">{description}</p>
-        </div>
-        <p className="text-xs text-gray-400 flex items-center gap-1">
-          <span>📋</span> {items} items
-        </p>
-        <Link
-          href={href}
-          className="inline-flex items-center justify-center h-10 px-5 rounded-full bg-[#171717] text-white text-sm font-medium w-fit hover:bg-[#383838] transition-colors"
-        >
-          Start survey
-        </Link>
-      </div>
-      <div className="relative w-28 h-28 flex-shrink-0">
-        <Image src={image} alt={title} fill className="object-contain" />
-      </div>
-    </div>
-  )
-}
 
 function ExploreCard({
   title, description, image, href, buttonLabel, bg,

@@ -11,62 +11,52 @@ const SURVEY_CARDS = [
   {
     title: 'Emotion regulation',
     description: 'Recognise, express, and regulate your emotions appropriately',
-    icon: '/assets/skill-er.png',
-    isImage: true,
+    icon: '/assets/survey-er-v2.png',
   },
   {
     title: 'Self-control',
     description: 'Control your actions to avoid excessive, addictive or other inappropriate behaviours',
-    icon: '/assets/skill-gauge.png',
-    isImage: true,
+    icon: '/assets/survey-sc.png',
   },
   {
     title: 'Self-motivation',
     description: 'Believe in yourself and your abilities and strive to improve yourself to achieve your goals and potential',
-    icon: '/assets/skill-ladder.png',
-    isImage: true,
+    icon: '/assets/survey-sm.png',
   },
   {
     title: 'Positivity',
     description: 'Be grateful, hopeful and trying to see the bright side of things',
-    icon: '/assets/skill-sun.png',
-    isImage: true,
+    icon: '/assets/survey-pos-v2.png',
   },
   {
     title: 'Appreciating diversity',
     description: 'Value everyone\'s strengths as well as their similarities and differences through learning from and working well with them',
-    icon: '🌍',
-    isImage: false,
+    icon: '/assets/survey-ad.png',
   },
   {
     title: 'Empathy',
     description: 'Understand one another\'s thoughts, feelings, needs, and concerns without judging them',
-    icon: '🫶',
-    isImage: false,
+    icon: '/assets/survey-emp.png',
   },
   {
     title: 'Interpersonal communication',
     description: 'Interact with others by listening actively and expressing your thoughts and feelings clearly and respectfully so as to build healthy relationships',
-    icon: '💬',
-    isImage: false,
+    icon: '/assets/survey-ic.png',
   },
   {
     title: 'Civic consciousness',
     description: 'Know about what is happening in Singapore, the region and the world.',
-    icon: '🌱',
-    isImage: false,
+    icon: '/assets/survey-cc.png',
   },
   {
     title: 'Problem-solving',
     description: 'Think through problems, consider different solutions and decide on appropriate courses of action',
-    icon: '🧩',
-    isImage: false,
+    icon: '/assets/survey-ps.png',
   },
   {
     title: 'Moral reasoning and action',
     description: 'Determine why a decision, or an action is right or wrong and to explain clearly the reasons for one\'s decisions and actions',
-    icon: '🧭',
-    isImage: false,
+    icon: '/assets/survey-mr.png',
   },
 ]
 
@@ -92,7 +82,7 @@ export default function SurveysPage() {
         {/* Info banner */}
         <div className="flex items-center gap-6 max-w-2xl mx-auto w-full">
           <div className="relative w-28 h-28 shrink-0">
-            <Image src="/assets/narrative-cactus.png" alt="Cactus character" fill className="object-contain" />
+            <Image src="/assets/surveys-cactus.png" alt="Cactus character" fill className="object-contain" />
           </div>
           <div className="bg-gray-100 rounded-2xl px-6 py-5 flex-1">
             <p className="font-semibold text-gray-800 mb-1">You're always learning and changing</p>
@@ -114,21 +104,21 @@ export default function SurveysPage() {
                 <p className="text-xs text-gray-400 flex items-center gap-1">
                   <span>📋</span> 6 items
                 </p>
-                <Link
-                  href="/survey/intro"
-                  className="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[#171717] text-white text-sm font-medium w-fit hover:bg-[#383838] transition-colors"
-                >
-                  Start survey
-                </Link>
-              </div>
-              <div className="shrink-0 w-20 h-20 flex items-center justify-center">
-                {card.isImage ? (
-                  <div className="relative w-20 h-20">
-                    <Image src={card.icon} alt={card.title} fill className="object-contain" />
-                  </div>
+                {card.title === 'Emotion regulation' ? (
+                  <Link
+                    href="/survey/intro"
+                    className="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[#171717] text-white text-sm font-medium w-fit hover:bg-[#383838] transition-colors"
+                  >
+                    Start survey
+                  </Link>
                 ) : (
-                  <span className="text-5xl">{card.icon}</span>
+                  <span className="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[#d4d4d4] text-white text-sm font-medium w-fit cursor-not-allowed">
+                    Start survey
+                  </span>
                 )}
+              </div>
+              <div className="relative shrink-0 w-[120px] h-[120px]">
+                <Image src={card.icon} alt={card.title} fill className="object-contain" />
               </div>
             </div>
           ))}

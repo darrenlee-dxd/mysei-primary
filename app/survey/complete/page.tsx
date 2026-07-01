@@ -45,9 +45,9 @@ export default function SurveyComplete() {
           </p>
         </div>
 
-        <div className="relative w-48 h-48">
+        <div className="relative w-72 h-[250px]">
           <Image
-            src="/assets/narrative-char3.png"
+            src="/assets/complete-char-v2.png"
             alt="Celebration character"
             fill
             className="object-contain"

@@ -70,7 +70,7 @@ export default function LoginPage() {
                 type="submit"
                 className="w-full h-12 rounded-full bg-[#211f26] text-white font-semibold text-base flex items-center justify-center gap-2 hover:bg-[#383838] transition-colors"
               >
-                Get login code →
+                Login
               </button>
               <p className="text-sm text-[#65636d] text-center">
                 You'll get a one-time login code in your email

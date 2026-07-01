@@ -6,6 +6,60 @@ import Image from 'next/image'
 import { SURVEY_QUESTIONS, ANSWER_OPTIONS } from '@/data/survey'
 import { useSession } from '@/store/session'
 
+const TIPS: { header: string; examples: string[] }[] = [
+  {
+    header: 'Some examples:',
+    examples: [
+      'I make a to-do list to organise my tasks',
+      'I talk to a trusted adult about things that worry me',
+      'I practise deep breathing exercises to help me calm down.',
+      'Talk to friends and/or trusted adults',
+    ],
+  },
+  {
+    header: 'Some examples of "how to manage my feelings":',
+    examples: [
+      'I take deep breaths to calm myself down when I am feeling nervous before a test.',
+      'I count to ten before responding to avoid saying something I may regret when I am upset with someone.',
+      'I stay calm and focus on my lesson now when I am excited about the inter-class games later.',
+    ],
+  },
+  {
+    header: 'Some examples:',
+    examples: [
+      'I am excited about joining in a new class, but I also feel nervous about having to make new friends',
+      'I feel honoured to represent my class for an inter-class competition but also feel pressured to perform well.',
+      'When my best friend moves to another school, I feel sad about him leaving but also happy for his new adventure.',
+    ],
+  },
+  {
+    header: 'Some examples of "who I ask for help":',
+    examples: [
+      'When I feel unwell at home, I can ask someone at home for help.',
+      'When I cannot do my schoolwork, I can ask my teachers for help.',
+      'When I feel left out by my friends, I can talk to the school counsellor to feel better.',
+      'When I have disagreement with my classmates, I can talk to my friends about it.',
+    ],
+  },
+  {
+    header: 'Some examples of "when I ask for help":',
+    examples: [
+      'When I am struggling to understand a new topic and it makes me want to give up, I know it is time for me to ask for help.',
+      'When I am experiencing some friendship problems and my friends refused to listen to me, I know it is time for me to seek help.',
+      'When I am feeling anxious about an upcoming competition and I cannot sleep, I know it is time to talk to someone.',
+    ],
+  },
+  {
+    header: 'Some examples of "how to ask for help":',
+    examples: [
+      'When my friend said something hurtful to me, I tell a trusted adult, "I am upset about what my friend said. Can we talk about it?"',
+      'When I fall and injure myself, I go to a teacher and say, "I\'ve hurt my knee. Please help me."',
+      'When my friend leaves me out, I tell my Form Teacher, "I feel hurt because I am being left out. Can we talk about it?"',
+      'When I see a scary image on the computer, I tell my family members, "I saw something that scared me online. Can you look at it with me?"',
+    ],
+  },
+]
+
 export default function SurveyQuestion({ params }: { params: Promise<{ step: string }> }) {
   const { step } = use(params)
   const stepNum = parseInt(step, 10)
@@ -14,7 +68,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
   const answers = useSession((s) => s.answers)
   const setAnswer = useSession((s) => s.setAnswer)
   const [selected, setSelected] = useState<string | null>(null)
-  const [showModal, setShowModal] = useState(false)
+  const [showSheet, setShowSheet] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
 
   const question = SURVEY_QUESTIONS[stepNum - 1]
@@ -134,7 +188,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                   </p>
                 </div>
                 <button
-                  onClick={() => setShowModal(true)}
+                  onClick={() => setShowSheet(true)}
                   className="self-start flex items-center gap-2 bg-[#171717] text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-[#383838] transition-colors"
                 >
                   What does this mean?
@@ -155,10 +209,10 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                   <button
                     key={option}
                     onClick={() => handleSelect(option)}
-                    className={`w-full bg-white rounded-xl border px-6 py-5 text-left text-base font-medium flex items-center justify-between transition-all ${
+                    className={`w-full rounded-xl border px-6 py-5 text-left text-base font-medium flex items-center justify-between transition-all ${
                       isSelected
-                        ? 'border-[#2563eb] ring-2 ring-[#2563eb] bg-blue-50 text-[#1e40af]'
-                        : 'border-gray-200 text-[#404040] hover:border-blue-300'
+                        ? 'border-[#e5e5e5] bg-[#dbeafe] text-[#2563eb]'
+                        : 'bg-white border-gray-200 text-[#404040] hover:border-blue-300'
                     }`}
                   >
                     <span>{option}</span>
@@ -200,32 +254,73 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
         </div>
       </div>
 
-      {/* Modal */}
-      {showModal && (
+      {/* Bottom sheet */}
+      {showSheet && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
-          onClick={() => setShowModal(false)}
+          className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40"
+          onClick={() => setShowSheet(false)}
         >
           <div
-            className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 p-8 flex flex-col gap-4"
+            className="bg-white rounded-t-3xl shadow-xl w-full max-h-[80vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between gap-4">
-              <h3 className="text-lg font-semibold text-gray-900">What does this mean?</h3>
+            {/* Handle + close */}
+            <div className="flex items-center justify-between px-6 pt-5 pb-4 shrink-0">
+              <div className="w-10 h-1 rounded-full bg-gray-300 mx-auto absolute left-1/2 -translate-x-1/2 top-3" />
+              <div />
               <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+                onClick={() => setShowSheet(false)}
+                className="ml-auto w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"
               >
-                ✕
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
               </button>
             </div>
-            <p className="text-gray-700 leading-relaxed">{question.tooltip}</p>
-            <button
-              onClick={() => setShowModal(false)}
-              className="self-end px-6 py-2.5 rounded-full bg-[#2563eb] text-white text-sm font-medium hover:bg-blue-700 transition-colors"
-            >
-              Got it
-            </button>
+
+            {/* Content */}
+            <div className="overflow-y-auto px-6 pb-6 flex flex-col gap-6 items-center">
+              <div className="w-full max-w-[600px] flex flex-col gap-6">
+                {/* Header */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">💭</span>
+                  <h3 className="text-lg font-semibold text-[#5151cd]">{TIPS[stepNum - 1].header}</h3>
+                </div>
+
+                {/* Examples list */}
+                <ul className="flex flex-col gap-4">
+                  {TIPS[stepNum - 1].examples.map((example, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="mt-1 w-2 h-2 rounded-full bg-gray-400 shrink-0" />
+                      <p className="flex-1 text-base text-[#211f26] leading-6">{example}</p>
+                      <button
+                        onClick={() => {
+                          window.speechSynthesis.cancel()
+                          window.speechSynthesis.speak(new SpeechSynthesisUtterance(example))
+                        }}
+                        className="shrink-0 w-7 h-7 rounded-full bg-[#bfdbfe] flex items-center justify-center hover:bg-blue-300 transition-colors"
+                        aria-label="Read aloud"
+                      >
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                        </svg>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 pb-8 pt-2 shrink-0 flex justify-center">
+              <button
+                onClick={() => setShowSheet(false)}
+                className="w-full max-w-[600px] py-3 rounded-full bg-[#171717] text-white font-medium text-base hover:bg-[#383838] transition-colors"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
