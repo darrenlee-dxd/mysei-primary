@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NavigationProgress } from "@/components/nav/NavigationProgress";
+import { PageTransition } from "@/components/nav/PageTransition";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,15 +20,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className={`${inter.className} min-h-full`}>
         <NavigationProgress />
-        <div style={{ animation: "pageFadeIn 0.35s ease-out" }}>
-          {children}
-        </div>
-        <style>{`
-          @keyframes pageFadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to   { opacity: 1; transform: translateY(0); }
-          }
-        `}</style>
+        <PageTransition>{children}</PageTransition>
       </body>
     </html>
   );

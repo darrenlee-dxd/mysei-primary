@@ -1,11 +1,53 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { NavBar } from '@/components/nav/NavBar'
 import { useSession } from '@/store/session'
+
+function ScrollReveal({
+  children,
+  delay = 0,
+  direction = 'up',
+}: {
+  children: React.ReactNode
+  delay?: number
+  direction?: 'up' | 'left' | 'right'
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect() } },
+      { threshold: 0.15 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const initial =
+    direction === 'left' ? 'translateX(-32px)'
+    : direction === 'right' ? 'translateX(32px)'
+    : 'translateY(28px)'
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translate(0)' : initial,
+        transition: `opacity 0.65s ease-out ${delay}ms, transform 0.65s ease-out ${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  )
+}
 
 export default function NarrativePage() {
   const userName = useSession((s) => s.userName)
@@ -70,6 +112,7 @@ export default function NarrativePage() {
 
           <div className="flex flex-col items-start w-full">
             {/* Tip 1 — offset right */}
+            <ScrollReveal direction="right" delay={0}>
             <div className="pr-16 w-full">
               <div className="bg-[#fef3c7] rounded-3xl p-10 flex flex-col gap-6 w-full">
                 <div className="flex items-start gap-4">
@@ -95,15 +138,19 @@ export default function NarrativePage() {
                 </div>
               </div>
             </div>
+            </ScrollReveal>
 
             {/* Connector path */}
+            <ScrollReveal delay={100}>
             <div className="h-[80px] w-full flex items-center justify-center opacity-20">
               <svg width="400" height="80" viewBox="0 0 400 80" fill="none">
                 <path d="M320 0 C320 40, 80 40, 80 80" stroke="#7C3AED" strokeWidth="3" fill="none" strokeDasharray="8 4"/>
               </svg>
             </div>
+            </ScrollReveal>
 
             {/* Tip 2 — offset left */}
+            <ScrollReveal direction="left" delay={0}>
             <div className="pl-16 w-full">
               <div className="bg-[#e0f2fe] rounded-3xl p-10 flex flex-col gap-6 w-full">
                 <div className="flex items-start gap-4">
@@ -128,6 +175,7 @@ export default function NarrativePage() {
                 </div>
               </div>
             </div>
+            </ScrollReveal>
           </div>
         </div>
 

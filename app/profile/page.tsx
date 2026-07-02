@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -202,6 +202,30 @@ function SkillCard({ skill, bg }: { skill: OverviewSkill; bg: string }) {
   )
 }
 
+function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect() } },
+      { threshold: 0.1 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return (
+    <div ref={ref} style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? 'translateY(0)' : 'translateY(24px)',
+      transition: `opacity 0.6s ease-out ${delay}ms, transform 0.6s ease-out ${delay}ms`,
+    }}>
+      {children}
+    </div>
+  )
+}
+
 function SkillGroup({
   title, description, skills, bg,
 }: {
@@ -233,40 +257,46 @@ function OverviewTab() {
       </div>
 
       {/* Section 1 */}
-      <SkillGroup
-        title="Understanding and managing myself"
-        description="These skills help you recognize what you're feeling, stay hopeful, and make intentional choices."
-        bg="bg-[#dbeafe]"
-        skills={[
-          { name: 'Emotion Regulation', status: 'Getting started' },
-          { name: 'Self-control', status: 'Making Progress' },
-          { name: 'Positivity', status: 'Getting There' },
-          { name: 'Self-motivation', status: 'Doing Well' },
-        ]}
-      />
+      <ScrollReveal delay={0}>
+        <SkillGroup
+          title="Understanding and managing myself"
+          description="These skills help you recognize what you're feeling, stay hopeful, and make intentional choices."
+          bg="bg-[#dbeafe]"
+          skills={[
+            { name: 'Emotion Regulation', status: 'Getting started' },
+            { name: 'Self-control', status: 'Making Progress' },
+            { name: 'Positivity', status: 'Getting There' },
+            { name: 'Self-motivation', status: 'Doing Well' },
+          ]}
+        />
+      </ScrollReveal>
 
       {/* Section 2 */}
-      <SkillGroup
-        title="Building relationships"
-        description="These skills are about connecting with the people around you. They help you understand different perspectives, care about your community, and tune into how others are feeling."
-        bg="bg-[#fef3c7]"
-        skills={[
-          { name: 'Appreciating diversity', status: 'Getting started' },
-          { name: 'Civic consciousness', status: 'Making Progress' },
-          { name: 'Empathy', status: 'Getting There' },
-        ]}
-      />
+      <ScrollReveal delay={0}>
+        <SkillGroup
+          title="Building relationships"
+          description="These skills are about connecting with the people around you. They help you understand different perspectives, care about your community, and tune into how others are feeling."
+          bg="bg-[#fef3c7]"
+          skills={[
+            { name: 'Appreciating diversity', status: 'Getting started' },
+            { name: 'Civic consciousness', status: 'Making Progress' },
+            { name: 'Empathy', status: 'Getting There' },
+          ]}
+        />
+      </ScrollReveal>
 
       {/* Section 3 */}
-      <SkillGroup
-        title="Making responsible choices"
-        description="These skills help you think through decisions and figure out what's right. They're about working through challenges, weighing different options, and making choices that align with your values."
-        bg="bg-[#dcfce7]"
-        skills={[
-          { name: 'Problem-solving', status: 'Getting started' },
-          { name: 'Moral reasoning and action', status: 'Making Progress' },
-        ]}
-      />
+      <ScrollReveal delay={0}>
+        <SkillGroup
+          title="Making responsible choices"
+          description="These skills help you think through decisions and figure out what's right. They're about working through challenges, weighing different options, and making choices that align with your values."
+          bg="bg-[#dcfce7]"
+          skills={[
+            { name: 'Problem-solving', status: 'Getting started' },
+            { name: 'Moral reasoning and action', status: 'Making Progress' },
+          ]}
+        />
+      </ScrollReveal>
     </div>
   )
 }

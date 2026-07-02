@@ -81,9 +81,9 @@ export default function Dashboard() {
                 {CAROUSEL_CARDS.map((card) => (
                   <div
                     key={card.title}
-                    className="bg-[#eff6ff] rounded-3xl p-6 shrink-0 w-[460px] h-[200px] flex items-center relative overflow-hidden"
+                    className="bg-[#eff6ff] rounded-3xl p-6 shrink-0 w-[460px] flex items-center gap-4"
                   >
-                    <div className="flex flex-col gap-4 w-[300px]">
+                    <div className="flex flex-col gap-4 flex-1">
                       <div className="flex flex-col gap-2">
                         <h4 className="font-semibold text-[#0a0a0a]">{card.title}</h4>
                         <p className="text-sm text-[#404040] leading-6">{card.description}</p>
@@ -105,7 +105,7 @@ export default function Dashboard() {
                       )}
                     </div>
                     {/* Illustration */}
-                    <div className="absolute right-8 top-1/2 -translate-y-1/2 w-[100px] h-[100px]">
+                    <div className="relative shrink-0 w-[100px] h-[100px]">
                       <Image src={card.image} alt={card.title} fill className="object-contain" />
                     </div>
                   </div>

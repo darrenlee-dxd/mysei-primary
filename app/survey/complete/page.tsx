@@ -18,6 +18,33 @@ export default function SurveyComplete() {
   useEffect(() => {
     if (confettiFired.current) return
     confettiFired.current = true
+
+    try {
+      const ctx = new AudioContext()
+      const melody = [
+        { freq: 523.25, t: 0.0 },
+        { freq: 659.25, t: 0.15 },
+        { freq: 783.99, t: 0.3 },
+        { freq: 1046.5, t: 0.45 },
+        { freq: 783.99, t: 0.6 },
+        { freq: 1046.5, t: 0.75 },
+      ]
+      melody.forEach(({ freq, t }) => {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        const start = ctx.currentTime + t
+        gain.gain.setValueAtTime(0, start)
+        gain.gain.linearRampToValueAtTime(0.15, start + 0.02)
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.55)
+        osc.start(start)
+        osc.stop(start + 0.55)
+      })
+    } catch {}
+
     import('canvas-confetti').then((mod) => {
       const confetti = mod.default
       confetti({

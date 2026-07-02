@@ -69,7 +69,15 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
   const setAnswer = useSession((s) => s.setAnswer)
   const [selected, setSelected] = useState<string | null>(null)
   const [showSheet, setShowSheet] = useState(false)
+  const [sheetClosing, setSheetClosing] = useState(false)
+
+  const closeSheet = () => {
+    setSheetClosing(true)
+    setTimeout(() => { setShowSheet(false); setSheetClosing(false) }, 320)
+  }
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [playingExample, setPlayingExample] = useState<number | null>(null)
+  const [questionVisible, setQuestionVisible] = useState(false)
 
   const question = SURVEY_QUESTIONS[stepNum - 1]
 
@@ -79,13 +87,42 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
     setSelected(answers[stepNum] ?? null)
   }, [stepNum, userName, router, question, answers])
 
+  useEffect(() => {
+    if (!question) return
+    setQuestionVisible(false)
+    const t = setTimeout(() => setQuestionVisible(true), 80)
+    return () => clearTimeout(t)
+  }, [stepNum, question])
+
   const handleSelect = (option: string) => {
     setSelected(option)
     setAnswer(stepNum, option)
   }
 
+  const playChime = () => {
+    try {
+      const ctx = new AudioContext()
+      const notes = [523.25, 659.25]
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        const start = ctx.currentTime + i * 0.12
+        gain.gain.setValueAtTime(0, start)
+        gain.gain.linearRampToValueAtTime(0.18, start + 0.02)
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.5)
+        osc.start(start)
+        osc.stop(start + 0.5)
+      })
+    } catch {}
+  }
+
   const handleNext = () => {
     if (!selected) return
+    playChime()
     if (stepNum < SURVEY_QUESTIONS.length) {
       router.push(`/survey/${stepNum + 1}`)
     } else {
@@ -153,15 +190,20 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
               return (
                 <div
                   key={i}
-                  className="flex-1 h-3 rounded-full shadow-md"
-                  style={{
-                    backgroundColor: isActive
-                      ? '#2563eb'
-                      : isPast
-                      ? '#60a5fa'
-                      : '#f2eff3',
-                  }}
-                />
+                  className="flex-1 h-3 rounded-full shadow-md overflow-hidden"
+                  style={{ backgroundColor: '#f2eff3' }}
+                >
+                  <div
+                    style={{
+                      height: '100%',
+                      borderRadius: '9999px',
+                      backgroundColor: isActive ? '#2563eb' : isPast ? '#60a5fa' : 'transparent',
+                      width: isActive || isPast ? '100%' : '0%',
+                      transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease',
+                      transitionDelay: isActive ? `${i * 40}ms` : '0ms',
+                    }}
+                  />
+                </div>
               )
             })}
           </div>
@@ -177,13 +219,26 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                     aria-label="Read question aloud"
                     className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${isSpeaking ? 'bg-blue-500' : 'bg-blue-200 hover:bg-blue-300'}`}
                   >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={isSpeaking ? 'white' : '#1e40af'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                    </svg>
+                    {isSpeaking ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                      </svg>
+                    ) : (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                      </svg>
+                    )}
                   </button>
-                  <p className="text-xl font-semibold text-[#211f26] leading-snug">
+                  <p
+                    className="text-xl font-semibold text-[#211f26] leading-snug"
+                    style={{
+                      opacity: questionVisible ? 1 : 0,
+                      transform: questionVisible ? 'translateX(0)' : 'translateX(-16px)',
+                      transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+                    }}
+                  >
                     {question.text}
                   </p>
                 </div>
@@ -202,13 +257,16 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
             </div>
 
             {/* Answer options */}
-            <div className="flex flex-col gap-4">
-              {ANSWER_OPTIONS.map((option) => {
+            <div key={stepNum} className="flex flex-col gap-4">
+              {ANSWER_OPTIONS.map((option, idx) => {
                 const isSelected = selected === option
                 return (
                   <button
                     key={option}
                     onClick={() => handleSelect(option)}
+                    style={questionVisible ? {
+                      animation: `optionFadeIn 0.3s ease-out ${300 + idx * 350}ms both`,
+                    } : { opacity: 0, pointerEvents: 'none' }}
                     className={`w-full rounded-xl border px-6 py-5 text-left text-base font-medium flex items-center justify-between transition-all ${
                       isSelected
                         ? 'border-[#e5e5e5] bg-[#dbeafe] text-[#2563eb]'
@@ -257,19 +315,28 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
       {/* Bottom sheet */}
       {showSheet && (
         <div
-          className="fixed inset-0 z-50 flex flex-col justify-end bg-black/40"
-          onClick={() => setShowSheet(false)}
+          className="fixed inset-0 z-50 flex flex-col justify-end"
+          onClick={closeSheet}
+          style={{
+            backgroundColor: sheetClosing ? 'rgba(0,0,0,0)' : 'rgba(0,0,0,0.4)',
+            transition: 'background-color 0.32s ease',
+          }}
         >
           <div
             className="bg-white rounded-t-3xl shadow-xl w-full max-h-[80vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
+            style={{
+              animation: sheetClosing
+                ? 'sheetSlideDown 0.32s cubic-bezier(0.4,0,1,1) forwards'
+                : 'sheetSlideUp 0.35s cubic-bezier(0.2,0,0,1) forwards',
+            }}
           >
             {/* Handle + close */}
             <div className="flex items-center justify-between px-6 pt-5 pb-4 shrink-0">
               <div className="w-10 h-1 rounded-full bg-gray-300 mx-auto absolute left-1/2 -translate-x-1/2 top-3" />
               <div />
               <button
-                onClick={() => setShowSheet(false)}
+                onClick={closeSheet}
                 className="ml-auto w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-500"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -296,15 +363,28 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                       <button
                         onClick={() => {
                           window.speechSynthesis.cancel()
-                          window.speechSynthesis.speak(new SpeechSynthesisUtterance(example))
+                          if (playingExample === i) {
+                            setPlayingExample(null)
+                          } else {
+                            setPlayingExample(i)
+                            const utt = new SpeechSynthesisUtterance(example)
+                            utt.onend = () => setPlayingExample(null)
+                            window.speechSynthesis.speak(utt)
+                          }
                         }}
                         className="shrink-0 w-7 h-7 rounded-full bg-[#bfdbfe] flex items-center justify-center hover:bg-blue-300 transition-colors"
-                        aria-label="Read aloud"
+                        aria-label={playingExample === i ? 'Stop' : 'Read aloud'}
                       >
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                        </svg>
+                        {playingExample === i ? (
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="#1e40af">
+                            <rect x="4" y="4" width="16" height="16" rx="2" />
+                          </svg>
+                        ) : (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                          </svg>
+                        )}
                       </button>
                     </li>
                   ))}
@@ -315,7 +395,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
             {/* Footer */}
             <div className="px-6 pb-8 pt-2 shrink-0 flex justify-center">
               <button
-                onClick={() => setShowSheet(false)}
+                onClick={closeSheet}
                 className="w-full max-w-[600px] py-3 rounded-full bg-[#171717] text-white font-medium text-base hover:bg-[#383838] transition-colors"
               >
                 Close
