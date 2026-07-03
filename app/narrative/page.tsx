@@ -189,7 +189,9 @@ export default function NarrativePage() {
               Find more strategies that fit you
             </h3>
             <a
-              href="#"
+              href="https://go.gov.sg/emotionregulation-ls"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-[#1d4ed8] text-white text-base font-medium hover:bg-blue-800 transition-colors w-fit"
             >
               See more strategies

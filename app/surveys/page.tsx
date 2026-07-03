@@ -1,11 +1,35 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import { NavBar } from '@/components/nav/NavBar'
 import { useSession } from '@/store/session'
+
+function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect() } },
+      { threshold: 0.1 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return (
+    <div ref={ref} style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? 'translateY(0)' : 'translateY(24px)',
+      transition: `opacity 0.6s ease-out ${delay}ms, transform 0.6s ease-out ${delay}ms`,
+    }}>
+      {children}
+    </div>
+  )
+}
 
 const SURVEY_CARDS = [
   {
@@ -94,33 +118,35 @@ export default function SurveysPage() {
 
         {/* Survey card grid */}
         <div className="grid grid-cols-2 gap-4">
-          {SURVEY_CARDS.map((card) => (
-            <div key={card.title} className="bg-[#eff6ff] rounded-2xl p-6 flex justify-between items-center gap-4">
-              <div className="flex flex-col gap-3 flex-1 min-w-0">
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-base">{card.title}</h3>
-                  <p className="text-sm text-gray-500 mt-1 leading-relaxed">{card.description}</p>
+          {SURVEY_CARDS.map((card, idx) => (
+            <ScrollReveal key={card.title} delay={(idx % 2) * 80}>
+              <div className="bg-[#eff6ff] rounded-2xl p-6 flex justify-between items-center gap-4">
+                <div className="flex flex-col gap-3 flex-1 min-w-0">
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-base">{card.title}</h3>
+                    <p className="text-sm text-gray-500 mt-1 leading-relaxed">{card.description}</p>
+                  </div>
+                  <p className="text-xs text-gray-400 flex items-center gap-1">
+                    <span>📋</span> 6 items
+                  </p>
+                  {card.title === 'Emotion regulation' ? (
+                    <Link
+                      href="/survey/intro"
+                      className="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[#171717] text-white text-sm font-medium w-fit hover:bg-[#383838] transition-colors"
+                    >
+                      Start survey
+                    </Link>
+                  ) : (
+                    <span className="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[#d4d4d4] text-white text-sm font-medium w-fit cursor-not-allowed">
+                      Start survey
+                    </span>
+                  )}
                 </div>
-                <p className="text-xs text-gray-400 flex items-center gap-1">
-                  <span>📋</span> 6 items
-                </p>
-                {card.title === 'Emotion regulation' ? (
-                  <Link
-                    href="/survey/intro"
-                    className="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[#171717] text-white text-sm font-medium w-fit hover:bg-[#383838] transition-colors"
-                  >
-                    Start survey
-                  </Link>
-                ) : (
-                  <span className="inline-flex items-center justify-center h-9 px-5 rounded-full bg-[#d4d4d4] text-white text-sm font-medium w-fit cursor-not-allowed">
-                    Start survey
-                  </span>
-                )}
+                <div className="relative shrink-0 w-[120px] h-[120px]">
+                  <Image src={card.icon} alt={card.title} fill className="object-contain" />
+                </div>
               </div>
-              <div className="relative shrink-0 w-[120px] h-[120px]">
-                <Image src={card.icon} alt={card.title} fill className="object-contain" />
-              </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </main>

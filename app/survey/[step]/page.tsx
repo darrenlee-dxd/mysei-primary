@@ -78,6 +78,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [playingExample, setPlayingExample] = useState<number | null>(null)
   const [questionVisible, setQuestionVisible] = useState(false)
+  const [showLeaveDialog, setShowLeaveDialog] = useState(false)
 
   const question = SURVEY_QUESTIONS[stepNum - 1]
 
@@ -93,6 +94,15 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
     const t = setTimeout(() => setQuestionVisible(true), 80)
     return () => clearTimeout(t)
   }, [stepNum, question])
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
 
   const handleSelect = (option: string) => {
     setSelected(option)
@@ -172,7 +182,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
             Emotional Regulation: Question {stepNum} of {SURVEY_QUESTIONS.length}
           </span>
           <button
-            onClick={() => router.push('/dashboard')}
+            onClick={() => setShowLeaveDialog(true)}
             className="text-sm px-6 py-2 rounded-full border border-gray-300 bg-white/10 text-gray-700 hover:bg-gray-50 transition-colors w-[110px]"
           >
             Exit
@@ -399,6 +409,66 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                 className="w-full max-w-[600px] py-3 rounded-full bg-[#171717] text-white font-medium text-base hover:bg-[#383838] transition-colors"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Leave survey warning dialog */}
+      {showLeaveDialog && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          onClick={() => setShowLeaveDialog(false)}
+          style={{ animation: 'dialogOverlayIn 0.2s ease-out both' }}
+        >
+          <div
+            className="bg-white border border-[#e5e5e5] rounded-[10px] shadow-xl w-full max-w-[400px] flex flex-col items-center overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            style={{ animation: 'dialogPopIn 0.25s cubic-bezier(0.2,0,0,1) both' }}
+          >
+            {/* Header */}
+            <div className="flex justify-end p-4 w-full">
+              <button
+                onClick={() => setShowLeaveDialog(false)}
+                aria-label="Close"
+                className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-500"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col gap-2.5 items-center px-6 pb-2">
+              <div className="bg-orange-200 rounded-full p-3 flex items-center justify-center">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c2410c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                  <path d="M12 9v4" /><path d="M12 17h.01" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-semibold text-[#211f26] text-center">
+                You&apos;re halfway there!
+              </h3>
+              <p className="text-lg text-[#65636d] text-center leading-[27px]">
+                If you leave now, you&apos;ll lose your progress so far.
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div className="flex gap-2 items-center justify-end w-full p-4">
+              <button
+                onClick={() => router.push('/dashboard')}
+                className="flex-1 min-h-[40px] px-6 py-2.5 rounded-full bg-[#dc2626] text-white text-sm font-medium hover:bg-red-700 transition-colors"
+              >
+                Leave for now
+              </button>
+              <button
+                onClick={() => setShowLeaveDialog(false)}
+                className="flex-1 min-h-[40px] px-6 py-2.5 rounded-full border border-[#d4d4d4] bg-white text-[#0a0a0a] text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                Keep going
               </button>
             </div>
           </div>
