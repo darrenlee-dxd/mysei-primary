@@ -21,36 +21,36 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-white">
       <NavBar />
 
-      <main className="max-w-[1200px] mx-auto px-4 py-10 flex flex-col gap-12">
+      <main className="max-w-[1200px] mx-auto px-4 py-8 sm:py-10 flex flex-col gap-8 sm:gap-12">
         {/* Page title */}
-        <h1 className="text-5xl font-semibold text-gray-900 text-center tracking-tight">
+        <h1 className="text-3xl sm:text-5xl font-semibold text-gray-900 text-center tracking-tight">
           MySEI Profile
         </h1>
 
         {/* Tab switcher */}
-        <div className="bg-[#f5f5f5] rounded-xl p-1 flex items-center w-full max-w-2xl mx-auto">
+        <div className="bg-[#f5f5f5] rounded-xl p-1 flex flex-col sm:flex-row items-stretch sm:items-center w-full max-w-2xl mx-auto gap-1">
           <button
             onClick={() => setActiveTab('overview')}
-            className={`flex-1 flex items-center justify-center gap-2 px-2.5 py-[5.5px] rounded-[10px] text-sm font-medium transition-all ${
+            className={`flex-1 flex items-center justify-center gap-2 px-2.5 py-2 sm:py-[5.5px] rounded-[10px] text-xs sm:text-sm font-medium transition-all text-center ${
               activeTab === 'overview'
                 ? 'bg-white text-[#0a0a0a] shadow-sm'
                 : 'text-[#0a0a0a] hover:bg-white/50'
             }`}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
               <path d="M3 3v18h18"/><path d="M7 16h2"/><path d="M11 11h2"/><path d="M15 6h2"/>
             </svg>
             Overview of My SE Skills
           </button>
           <button
             onClick={() => setActiveTab('strengths')}
-            className={`flex-1 flex items-center justify-center gap-2 px-2.5 py-[5.5px] rounded-[10px] text-sm font-medium transition-all ${
+            className={`flex-1 flex items-center justify-center gap-2 px-2.5 py-2 sm:py-[5.5px] rounded-[10px] text-xs sm:text-sm font-medium transition-all text-center ${
               activeTab === 'strengths'
                 ? 'bg-white text-[#0a0a0a] shadow-sm'
                 : 'text-[#0a0a0a] hover:bg-white/50'
             }`}
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
             My Strengths and Areas for Growth
@@ -69,16 +69,16 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4 sm:gap-5">
               {SKILLS.map((skill) => (
-                <div key={skill.id} className="bg-[#f8f9ff] rounded-2xl p-6 flex flex-col gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-14 h-14 shrink-0">
+                <div key={skill.id} className="bg-[#f8f9ff] rounded-2xl p-4 sm:p-6 flex flex-col gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="relative w-11 h-11 sm:w-14 sm:h-14 shrink-0">
                       <Image src={skill.icon} alt={skill.name} fill className="object-contain" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{skill.name}</h3>
-                      <p className="text-sm text-gray-500 mt-0.5">{skill.description}</p>
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{skill.name}</h3>
+                      <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{skill.description}</p>
                     </div>
                   </div>
 
@@ -88,8 +88,8 @@ export default function ProfilePage() {
 
                   <div className="flex flex-col gap-3">
                     {skill.results.map((result, i) => (
-                      <div key={i} className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
+                      <div key={i} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div className="flex items-center gap-3 flex-wrap">
                           <span className="text-sm text-gray-700">{result.date}</span>
                           <span
                             className={`text-xs font-medium px-2.5 py-1 rounded-full ${STATUS_COLORS[result.status]}`}
@@ -100,12 +100,12 @@ export default function ProfilePage() {
                         {skill.id === 'emotion-regulation' ? (
                           <Link
                             href="/narrative"
-                            className="text-sm font-medium text-[#2563eb] border border-[#2563eb] px-4 py-1.5 rounded-full hover:bg-blue-50 transition-colors"
+                            className="text-sm font-medium text-[#2563eb] border border-[#2563eb] px-4 py-1.5 rounded-full hover:bg-blue-50 transition-colors w-fit"
                           >
                             See insights →
                           </Link>
                         ) : (
-                          <span className="text-sm font-medium text-gray-300 border border-gray-200 px-4 py-1.5 rounded-full cursor-not-allowed">
+                          <span className="text-sm font-medium text-gray-300 border border-gray-200 px-4 py-1.5 rounded-full cursor-not-allowed w-fit">
                             See insights →
                           </span>
                         )}
@@ -180,7 +180,7 @@ function WateringCan({ status }: { status: SkillStatus }) {
   const maskBlue = `linear-gradient(to bottom, transparent 0%, transparent ${greyPct}%, black ${greyPct}%)`
   const maskGrey = `linear-gradient(to bottom, black 0%, black ${greyPct}%, transparent ${greyPct}%)`
   return (
-    <div className="relative w-[100px] h-[100px]">
+    <div className="relative w-[70px] h-[70px] sm:w-[100px] sm:h-[100px]">
       {/* Grey (desaturated) top portion */}
       {greyPct > 0 && (
         <img
@@ -216,13 +216,13 @@ function Stars({ status }: { status: SkillStatus }) {
 
 function SkillCard({ skill, bg }: { skill: OverviewSkill; bg: string }) {
   return (
-    <div className={`${bg} rounded-3xl px-8 py-4 flex flex-col items-center gap-3`}>
+    <div className={`${bg} rounded-3xl px-4 sm:px-8 py-4 flex flex-col items-center gap-3`}>
       <p className="text-sm font-semibold text-gray-700 text-center truncate w-full text-ellipsis overflow-hidden whitespace-nowrap">
         {skill.name}
       </p>
       <div className="bg-white rounded-3xl p-3 w-full flex flex-col items-center gap-2">
         <WateringCan status={skill.status} />
-        <p className="text-base font-semibold text-gray-800">{skill.status}</p>
+        <p className="text-sm sm:text-base font-semibold text-gray-800 text-center">{skill.status}</p>
         <Stars status={skill.status} />
       </div>
     </div>
@@ -259,7 +259,7 @@ function SkillGroup({
   skills: OverviewSkill[]
 }) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3">
       {skills.map((s) => <SkillCard key={s.name} skill={s} bg="bg-[#dbeafe]" />)}
     </div>
   )
@@ -268,18 +268,18 @@ function SkillGroup({
 function BarCard({ skill }: { skill: OverviewSkill }) {
   const pct = FILL_PCT[skill.status]
   return (
-    <div className="bg-[#dbeafe] rounded-[32px] px-8 py-5 flex flex-col gap-3 w-full">
-      <p className="text-lg text-[#404040] truncate">{skill.name}</p>
-      <div className="relative w-full h-16 bg-white rounded-full overflow-hidden">
+    <div className="bg-[#dbeafe] rounded-[24px] sm:rounded-[32px] px-4 sm:px-8 py-4 sm:py-5 flex flex-col gap-2 sm:gap-3 w-full">
+      <p className="text-base sm:text-lg text-[#404040] truncate">{skill.name}</p>
+      <div className="relative w-full h-12 sm:h-16 bg-white rounded-full overflow-hidden">
         <div
           className={`absolute left-0 top-0 h-full bg-[#7dd3fc] ${pct >= 100 ? 'rounded-full' : 'rounded-l-full'}`}
           style={{ width: `${pct}%`, transition: 'width 0.6s ease-out' }}
         />
-        <div className="relative z-10 h-full flex items-center gap-2 px-5">
-          <div className="w-8 h-8 rounded-lg bg-[#e0f2fe] flex items-center justify-center overflow-hidden shrink-0">
+        <div className="relative z-10 h-full flex items-center gap-2 px-3 sm:px-5">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-[#e0f2fe] flex items-center justify-center overflow-hidden shrink-0">
             <Image src={TIER_ICON[skill.status]} alt="" width={32} height={32} className="object-cover" />
           </div>
-          <span className="text-lg font-semibold text-[#211f26] whitespace-nowrap">{skill.status}</span>
+          <span className="text-sm sm:text-lg font-semibold text-[#211f26] whitespace-nowrap">{skill.status}</span>
         </div>
       </div>
     </div>
@@ -336,12 +336,12 @@ function OverviewTab() {
     <div className="flex flex-col gap-10">
       {/* Header */}
       <div className="flex flex-col items-center gap-4 text-center">
-        <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-semibold text-gray-900">Overview of My SE Skills</h2>
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Overview of My SE Skills</h2>
           <ViewToggle view={view} onChange={setView} />
         </div>
-        <p className="text-gray-500 text-sm">Just like a vibrant garden, your emotional well-being thrives when it's nurtured.</p>
-        <div className="relative w-full max-w-md h-48 rounded-2xl overflow-hidden">
+        <p className="text-gray-500 text-sm px-2">Just like a vibrant garden, your emotional well-being thrives when it's nurtured.</p>
+        <div className="relative w-full max-w-md h-36 sm:h-48 rounded-2xl overflow-hidden">
           <Image src="/assets/dashboard-hero.png" alt="MySEI characters" fill className="object-cover" />
         </div>
       </div>

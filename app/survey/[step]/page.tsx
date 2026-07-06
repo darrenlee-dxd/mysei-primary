@@ -3,68 +3,15 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { SURVEY_QUESTIONS, ANSWER_OPTIONS } from '@/data/survey'
+import { SURVEY_QUESTIONS, SURVEY_QUESTIONS_BY_LEVEL, SURVEY_TIPS_BY_LEVEL, ANSWER_OPTIONS } from '@/data/survey'
 import { useSession } from '@/store/session'
-
-const TIPS: { header: string; examples: string[] }[] = [
-  {
-    header: 'Some examples:',
-    examples: [
-      'I make a to-do list to organise my tasks',
-      'I talk to a trusted adult about things that worry me',
-      'I practise deep breathing exercises to help me calm down.',
-      'Talk to friends and/or trusted adults',
-    ],
-  },
-  {
-    header: 'Some examples of "how to manage my feelings":',
-    examples: [
-      'I take deep breaths to calm myself down when I am feeling nervous before a test.',
-      'I count to ten before responding to avoid saying something I may regret when I am upset with someone.',
-      'I stay calm and focus on my lesson now when I am excited about the inter-class games later.',
-    ],
-  },
-  {
-    header: 'Some examples:',
-    examples: [
-      'I am excited about joining in a new class, but I also feel nervous about having to make new friends',
-      'I feel honoured to represent my class for an inter-class competition but also feel pressured to perform well.',
-      'When my best friend moves to another school, I feel sad about him leaving but also happy for his new adventure.',
-    ],
-  },
-  {
-    header: 'Some examples of "who I ask for help":',
-    examples: [
-      'When I feel unwell at home, I can ask someone at home for help.',
-      'When I cannot do my schoolwork, I can ask my teachers for help.',
-      'When I feel left out by my friends, I can talk to the school counsellor to feel better.',
-      'When I have disagreement with my classmates, I can talk to my friends about it.',
-    ],
-  },
-  {
-    header: 'Some examples of "when I ask for help":',
-    examples: [
-      'When I am struggling to understand a new topic and it makes me want to give up, I know it is time for me to ask for help.',
-      'When I am experiencing some friendship problems and my friends refused to listen to me, I know it is time for me to seek help.',
-      'When I am feeling anxious about an upcoming competition and I cannot sleep, I know it is time to talk to someone.',
-    ],
-  },
-  {
-    header: 'Some examples of "how to ask for help":',
-    examples: [
-      'When my friend said something hurtful to me, I tell a trusted adult, "I am upset about what my friend said. Can we talk about it?"',
-      'When I fall and injure myself, I go to a teacher and say, "I\'ve hurt my knee. Please help me."',
-      'When my friend leaves me out, I tell my Form Teacher, "I feel hurt because I am being left out. Can we talk about it?"',
-      'When I see a scary image on the computer, I tell my family members, "I saw something that scared me online. Can you look at it with me?"',
-    ],
-  },
-]
 
 export default function SurveyQuestion({ params }: { params: Promise<{ step: string }> }) {
   const { step } = use(params)
   const stepNum = parseInt(step, 10)
   const router = useRouter()
   const userName = useSession((s) => s.userName)
+  const studentLevel = useSession((s) => s.studentLevel)
   const answers = useSession((s) => s.answers)
   const setAnswer = useSession((s) => s.setAnswer)
   const [selected, setSelected] = useState<string | null>(null)
@@ -80,7 +27,9 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
   const [questionVisible, setQuestionVisible] = useState(false)
   const [showLeaveDialog, setShowLeaveDialog] = useState(false)
 
-  const question = SURVEY_QUESTIONS[stepNum - 1]
+  const questions = SURVEY_QUESTIONS_BY_LEVEL[studentLevel] ?? SURVEY_QUESTIONS
+  const TIPS = SURVEY_TIPS_BY_LEVEL[studentLevel]
+  const question = questions[stepNum - 1]
 
   useEffect(() => {
     if (!userName) { router.replace('/'); return }
@@ -133,7 +82,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
   const handleNext = () => {
     if (!selected) return
     playChime()
-    if (stepNum < SURVEY_QUESTIONS.length) {
+    if (stepNum < questions.length) {
       router.push(`/survey/${stepNum + 1}`)
     } else {
       router.push('/survey/complete')
@@ -176,24 +125,27 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
         </div>
 
         {/* Header nav */}
-        <header className="relative z-10 h-[71px] bg-white border-b border-gray-200 flex items-center justify-between px-8 shrink-0">
-          <span className="text-2xl font-bold text-[#3e63dd]">MySEI</span>
-          <span className="text-sm font-medium text-gray-700">
-            Emotional Regulation: Question {stepNum} of {SURVEY_QUESTIONS.length}
+        <header className="relative z-10 h-[60px] sm:h-[71px] bg-white border-b border-gray-200 flex items-center justify-between px-3 sm:px-8 gap-2 shrink-0">
+          <span className="text-lg sm:text-2xl font-bold text-[#3e63dd] shrink-0">MySEI</span>
+          <span className="hidden sm:inline text-sm font-medium text-gray-700 truncate">
+            Emotional Regulation: Question {stepNum} of {questions.length}
+          </span>
+          <span className="sm:hidden text-xs font-medium text-gray-700 shrink-0">
+            {stepNum}/{questions.length}
           </span>
           <button
             onClick={() => setShowLeaveDialog(true)}
-            className="text-sm px-6 py-2 rounded-full border border-gray-300 bg-white/10 text-gray-700 hover:bg-gray-50 transition-colors w-[110px]"
+            className="text-xs sm:text-sm px-4 sm:px-6 py-1.5 sm:py-2 rounded-full border border-gray-300 bg-white/10 text-gray-700 hover:bg-gray-50 transition-colors shrink-0"
           >
             Exit
           </button>
         </header>
 
         {/* Content */}
-        <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-10 px-4 py-8">
+        <div className="relative z-10 flex-1 flex flex-col items-center justify-center gap-6 sm:gap-10 px-4 py-6 sm:py-8">
           {/* Progress bar */}
           <div className="flex gap-2 w-[780px] max-w-full">
-            {SURVEY_QUESTIONS.map((_, i) => {
+            {questions.map((_, i) => {
               const idx = i + 1
               const isPast = idx < stepNum
               const isActive = idx === stepNum
@@ -219,15 +171,15 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
           </div>
 
           {/* Question + answers */}
-          <div className="flex flex-col gap-8 w-[600px] max-w-full">
+          <div className="flex flex-col gap-6 sm:gap-8 w-[600px] max-w-full">
             {/* Question card */}
-            <div className="bg-white rounded-2xl shadow-md p-6 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 border border-gray-100">
               <div className="flex flex-col gap-4">
                 <div className="flex items-start gap-3">
                   <button
                     onClick={handleSpeak}
                     aria-label="Read question aloud"
-                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${isSpeaking ? 'bg-blue-500' : 'bg-blue-200 hover:bg-blue-300'}`}
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 transition-colors ${isSpeaking ? 'bg-blue-500' : 'bg-blue-200 hover:bg-blue-300'}`}
                   >
                     {isSpeaking ? (
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
@@ -242,7 +194,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                     )}
                   </button>
                   <p
-                    className="text-xl font-semibold text-[#211f26] leading-snug"
+                    className="text-base sm:text-xl font-semibold text-[#211f26] leading-snug"
                     style={{
                       opacity: questionVisible ? 1 : 0,
                       transform: questionVisible ? 'translateX(0)' : 'translateX(-16px)',
@@ -277,7 +229,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                     style={questionVisible ? {
                       animation: `optionFadeIn 0.3s ease-out ${300 + idx * 350}ms both`,
                     } : { opacity: 0, pointerEvents: 'none' }}
-                    className={`w-full rounded-xl border px-6 py-5 text-left text-base font-medium flex items-center justify-between transition-all ${
+                    className={`w-full rounded-xl border px-4 sm:px-6 py-4 sm:py-5 text-left text-sm sm:text-base font-medium flex items-center justify-between gap-3 transition-all ${
                       isSelected
                         ? 'border-[#e5e5e5] bg-[#dbeafe] text-[#2563eb]'
                         : 'bg-white border-gray-200 text-[#404040] hover:border-blue-300'
@@ -304,17 +256,17 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
 
         {/* Bottom nav */}
         <div className="relative z-10 bg-white border-t border-gray-200 shrink-0">
-          <div className="max-w-[1168px] mx-auto px-4 py-5 flex items-center justify-between">
+          <div className="max-w-[1168px] mx-auto px-4 py-4 sm:py-5 flex items-center justify-between gap-3">
             <button
               onClick={handleBack}
-              className={`px-16 py-3 rounded-full border border-gray-300 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors ${stepNum === 1 ? 'opacity-0 pointer-events-none' : ''}`}
+              className={`flex-1 sm:flex-none px-6 sm:px-16 py-2.5 sm:py-3 rounded-full border border-gray-300 text-sm sm:text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors ${stepNum === 1 ? 'opacity-0 pointer-events-none' : ''}`}
             >
               Back
             </button>
             <button
               onClick={handleNext}
               disabled={!selected}
-              className="px-16 py-3 rounded-full bg-[#2563eb] text-white text-base font-medium hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="flex-1 sm:flex-none px-6 sm:px-16 py-2.5 sm:py-3 rounded-full bg-[#2563eb] text-white text-sm sm:text-base font-medium hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Next
             </button>

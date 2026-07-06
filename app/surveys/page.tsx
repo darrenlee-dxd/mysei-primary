@@ -21,7 +21,7 @@ function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; dela
     return () => observer.disconnect()
   }, [])
   return (
-    <div ref={ref} style={{
+    <div ref={ref} className="h-full" style={{
       opacity: visible ? 1 : 0,
       transform: visible ? 'translateY(0)' : 'translateY(24px)',
       transition: `opacity 0.6s ease-out ${delay}ms, transform 0.6s ease-out ${delay}ms`,
@@ -96,19 +96,19 @@ export default function SurveysPage() {
     <div className="min-h-screen bg-white">
       <NavBar />
 
-      <main className="max-w-[1128px] mx-auto px-4 py-10 flex flex-col gap-10">
+      <main className="max-w-[1128px] mx-auto px-4 py-8 sm:py-10 flex flex-col gap-8 sm:gap-10">
         {/* Page header */}
         <div className="text-center flex flex-col gap-2">
-          <h1 className="text-4xl font-bold text-gray-900">My Surveys</h1>
-          <p className="text-gray-500 text-base">Only your teacher will see your answers so they know how to help you.</p>
+          <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">My Surveys</h1>
+          <p className="text-gray-500 text-sm sm:text-base">Only your teacher will see your answers so they know how to help you.</p>
         </div>
 
         {/* Info banner */}
-        <div className="flex items-center gap-6 max-w-2xl mx-auto w-full">
-          <div className="relative w-28 h-28 shrink-0">
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 max-w-2xl mx-auto w-full">
+          <div className="relative w-20 h-20 sm:w-28 sm:h-28 shrink-0">
             <Image src="/assets/surveys-cactus.png" alt="Cactus character" fill className="object-contain" />
           </div>
-          <div className="bg-gray-100 rounded-2xl px-6 py-5 flex-1">
+          <div className="bg-gray-100 rounded-2xl px-5 sm:px-6 py-4 sm:py-5 flex-1 text-center sm:text-left">
             <p className="font-semibold text-gray-800 mb-1">You're always learning and changing</p>
             <p className="text-sm text-gray-600 leading-relaxed">
               Answer honestly and think about your experiences at home, in school, and in your community.
@@ -117,18 +117,20 @@ export default function SurveysPage() {
         </div>
 
         {/* Survey card grid */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {SURVEY_CARDS.map((card, idx) => (
             <ScrollReveal key={card.title} delay={(idx % 2) * 80}>
-              <div className="bg-[#eff6ff] rounded-2xl p-6 flex justify-between items-center gap-4">
-                <div className="flex flex-col gap-3 flex-1 min-w-0">
-                  <div>
-                    <h3 className="font-semibold text-gray-900 text-base">{card.title}</h3>
-                    <p className="text-sm text-gray-500 mt-1 leading-relaxed">{card.description}</p>
+              <div className="bg-[#eff6ff] rounded-2xl p-5 sm:p-6 flex justify-between items-center gap-4 h-full">
+                <div className="flex flex-col justify-between gap-3 flex-1 min-w-0 h-full">
+                  <div className="flex flex-col gap-3">
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-base">{card.title}</h3>
+                      <p className="text-sm text-gray-500 mt-1 leading-relaxed">{card.description}</p>
+                    </div>
+                    <p className="text-xs text-gray-400 flex items-center gap-1">
+                      <span>📋</span> 6 items
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-400 flex items-center gap-1">
-                    <span>📋</span> 6 items
-                  </p>
                   {card.title === 'Emotion regulation' ? (
                     <Link
                       href="/survey/intro"
@@ -142,7 +144,7 @@ export default function SurveysPage() {
                     </span>
                   )}
                 </div>
-                <div className="relative shrink-0 w-[120px] h-[120px]">
+                <div className="relative shrink-0 w-[80px] h-[80px] sm:w-[120px] sm:h-[120px]">
                   <Image src={card.icon} alt={card.title} fill className="object-contain" />
                 </div>
               </div>

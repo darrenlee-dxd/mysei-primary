@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -28,43 +28,60 @@ const CAROUSEL_CARDS = [
 export default function Dashboard() {
   const userName = useSession((s) => s.userName)
   const router = useRouter()
-  const [carouselIdx, setCarouselIdx] = useState(0)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(true)
 
   useEffect(() => {
     if (!userName) router.replace('/')
   }, [userName, router])
+
+  const updateScrollState = () => {
+    const el = trackRef.current
+    if (!el) return
+    setCanScrollLeft(el.scrollLeft > 4)
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4)
+  }
+
+  const scrollByCard = (dir: 1 | -1) => {
+    const el = trackRef.current
+    if (!el) return
+    const card = el.querySelector('[data-carousel-card]') as HTMLElement | null
+    const amount = (card?.offsetWidth ?? el.clientWidth) + 16
+    el.scrollBy({ left: dir * amount, behavior: 'smooth' })
+  }
 
   const firstName = userName?.split(' ')[0] || 'Amy'
 
   return (
     <div className="min-h-screen bg-white">
       <NavBar />
-      <main className="max-w-[1128px] mx-auto px-4 py-12 flex flex-col gap-16">
+      <main className="max-w-[1128px] mx-auto px-4 py-8 sm:py-12 flex flex-col gap-10 sm:gap-16">
         {/* Hero banner */}
-        <div className="bg-[#d1fae5] rounded-[32px] flex items-center overflow-hidden min-h-[200px] relative">
-          <div className="flex-1 pl-10 py-8">
-            <h2 className="text-2xl font-semibold text-gray-800">Hi {firstName}!</h2>
-            <p className="text-lg text-gray-600 mt-1">Welcome back, nice to see you again!</p>
+        <div className="bg-[#d1fae5] rounded-[32px] flex flex-col sm:flex-row items-center overflow-hidden relative">
+          <div className="flex-1 pl-6 sm:pl-10 pr-6 sm:pr-0 pt-8 sm:py-8 order-2 sm:order-1 w-full">
+            <h2 className="text-xl sm:text-2xl font-semibold text-gray-800">Hi {firstName}!</h2>
+            <p className="text-base sm:text-lg text-gray-600 mt-1">Welcome back, nice to see you again!</p>
           </div>
-          <div className="relative h-[220px] w-[500px] flex-shrink-0">
+          <div className="relative h-[160px] sm:h-[220px] w-full sm:w-[500px] shrink-0 order-1 sm:order-2">
             <Image
               src="/assets/dashboard-hero.png"
               alt="MySEI characters"
               fill
-              className="object-cover object-left rounded-r-[32px]"
+              className="object-cover object-center sm:object-left rounded-t-[32px] sm:rounded-t-none sm:rounded-r-[32px]"
             />
           </div>
         </div>
 
         {/* New surveys carousel */}
         <section>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">New surveys</h3>
-          <div className="flex items-center gap-4">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">New surveys</h3>
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Left arrow */}
             <button
-              onClick={() => setCarouselIdx((i) => Math.max(0, i - 1))}
-              disabled={carouselIdx === 0}
-              className="w-10 h-10 rounded-full bg-[#171717] flex items-center justify-center shrink-0 disabled:opacity-30 hover:bg-[#383838] transition-colors"
+              onClick={() => scrollByCard(-1)}
+              disabled={!canScrollLeft}
+              className="hidden sm:flex w-10 h-10 rounded-full bg-[#171717] items-center justify-center shrink-0 disabled:opacity-30 hover:bg-[#383838] transition-colors"
               aria-label="Previous"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -73,17 +90,19 @@ export default function Dashboard() {
             </button>
 
             {/* Cards track */}
-            <div className="flex-1 overflow-hidden relative">
+            <div className="flex-1 overflow-hidden relative min-w-0">
               <div
-                className="flex gap-4 transition-transform duration-300 ease-in-out"
-                style={{ transform: `translateX(calc(-${carouselIdx} * (460px + 16px)))` }}
+                ref={trackRef}
+                onScroll={updateScrollState}
+                className="flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth"
               >
                 {CAROUSEL_CARDS.map((card) => (
                   <div
                     key={card.title}
-                    className="bg-[#eff6ff] rounded-3xl p-6 shrink-0 w-[460px] flex items-center gap-4"
+                    data-carousel-card
+                    className="bg-[#eff6ff] rounded-3xl p-5 sm:p-6 shrink-0 snap-start w-[85vw] sm:w-[460px] max-w-[460px] flex items-center gap-4"
                   >
-                    <div className="flex flex-col gap-4 flex-1">
+                    <div className="flex flex-col gap-3 sm:gap-4 flex-1 min-w-0">
                       <div className="flex flex-col gap-2">
                         <h4 className="font-semibold text-[#0a0a0a]">{card.title}</h4>
                         <p className="text-sm text-[#404040] leading-6">{card.description}</p>
@@ -105,21 +124,21 @@ export default function Dashboard() {
                       )}
                     </div>
                     {/* Illustration */}
-                    <div className="relative shrink-0 w-[100px] h-[100px]">
+                    <div className="relative shrink-0 w-[70px] h-[70px] sm:w-[100px] sm:h-[100px]">
                       <Image src={card.image} alt={card.title} fill className="object-contain" />
                     </div>
                   </div>
                 ))}
               </div>
               {/* Right fade gradient */}
-              <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+              <div className="hidden sm:block absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-white to-transparent pointer-events-none" />
             </div>
 
             {/* Right arrow */}
             <button
-              onClick={() => setCarouselIdx((i) => Math.min(CAROUSEL_CARDS.length - 1, i + 1))}
-              disabled={carouselIdx === CAROUSEL_CARDS.length - 1}
-              className="w-10 h-10 rounded-full bg-[#171717] flex items-center justify-center shrink-0 disabled:opacity-30 hover:bg-[#383838] transition-colors"
+              onClick={() => scrollByCard(1)}
+              disabled={!canScrollRight}
+              className="hidden sm:flex w-10 h-10 rounded-full bg-[#171717] items-center justify-center shrink-0 disabled:opacity-30 hover:bg-[#383838] transition-colors"
               aria-label="Next"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -131,8 +150,8 @@ export default function Dashboard() {
 
         {/* Explore */}
         <section>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Explore at your own pace</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Explore at your own pace</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ExploreCard
               title="Surveys"
               description="Assess your SE competencies"
@@ -169,12 +188,12 @@ function ExploreCard({
 }) {
   return (
     <div className={`rounded-2xl overflow-hidden flex flex-col`}>
-      <div className={`${bg} flex items-center justify-center py-8`}>
-        <div className="relative w-24 h-24">
+      <div className={`${bg} flex items-center justify-center py-6 sm:py-8`}>
+        <div className="relative w-20 h-20 sm:w-24 sm:h-24">
           <Image src={image} alt={title} fill className="object-contain" />
         </div>
       </div>
-      <div className="p-6 border border-gray-200 border-t-0 rounded-b-2xl bg-white flex flex-col gap-2">
+      <div className="p-5 sm:p-6 border border-gray-200 border-t-0 rounded-b-2xl bg-white flex flex-col gap-2">
         <h4 className="font-semibold text-gray-900">{title}</h4>
         <p className="text-sm text-gray-500">{description}</p>
         <div className="mt-2">

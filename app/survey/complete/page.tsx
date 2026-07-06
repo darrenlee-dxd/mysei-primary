@@ -58,21 +58,21 @@ export default function SurveyComplete() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <header className="h-[71px] border-b border-gray-200 flex items-center px-8">
-        <span className="text-2xl font-bold text-[#3e63dd]">MySEI</span>
+      <header className="h-[60px] sm:h-[71px] border-b border-gray-200 flex items-center px-4 sm:px-8">
+        <span className="text-lg sm:text-2xl font-bold text-[#3e63dd]">MySEI</span>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center gap-8 px-4 text-center">
-        <h1 className="text-4xl font-bold text-gray-900">Survey completed!</h1>
+      <main className="flex-1 flex flex-col items-center justify-center gap-6 sm:gap-8 px-4 py-8 text-center">
+        <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">Survey completed!</h1>
 
-        <div className="bg-gray-100 rounded-2xl px-8 py-6 max-w-sm">
+        <div className="bg-gray-100 rounded-2xl px-6 sm:px-8 py-5 sm:py-6 max-w-sm">
           <p className="font-semibold text-gray-800 mb-2">Great job!</p>
           <p className="text-gray-600 text-sm leading-relaxed">
             You're growing with every step. It's okay if you're still figuring things out. I am too! 🌱
           </p>
         </div>
 
-        <div className="relative w-72 h-[250px]">
+        <div className="relative w-56 h-[190px] sm:w-72 sm:h-[250px]">
           <Image
             src="/assets/complete-char-v2.png"
             alt="Celebration character"
