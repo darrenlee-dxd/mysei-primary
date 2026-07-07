@@ -59,7 +59,7 @@ export default function ProfilePage() {
 
         {/* Content */}
         {activeTab === 'strengths' && (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 max-w-[824px] mx-auto w-full">
             <div className="text-center">
               <h2 className="text-2xl font-semibold text-gray-900">
                 My Strengths and Areas for Growth
@@ -259,7 +259,7 @@ function SkillGroup({
   skills: OverviewSkill[]
 }) {
   return (
-    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+    <div className="grid grid-cols-2 gap-2 sm:gap-3 max-w-[600px] mx-auto w-full">
       {skills.map((s) => <SkillCard key={s.name} skill={s} bg="bg-[#dbeafe]" />)}
     </div>
   )
@@ -268,18 +268,18 @@ function SkillGroup({
 function BarCard({ skill }: { skill: OverviewSkill }) {
   const pct = FILL_PCT[skill.status]
   return (
-    <div className="bg-[#dbeafe] rounded-[24px] sm:rounded-[32px] px-4 sm:px-8 py-4 sm:py-5 flex flex-col gap-2 sm:gap-3 w-full">
-      <p className="text-base sm:text-lg text-[#404040] truncate">{skill.name}</p>
-      <div className="relative w-full h-12 sm:h-16 bg-white rounded-full overflow-hidden">
+    <div className="bg-[#dbeafe] rounded-2xl sm:rounded-[24px] px-3 sm:px-6 py-2.5 sm:py-3 flex flex-col gap-1.5 sm:gap-2 w-full">
+      <p className="text-sm sm:text-base text-[#404040] truncate">{skill.name}</p>
+      <div className="relative w-full h-9 sm:h-11 bg-white rounded-full overflow-hidden">
         <div
           className={`absolute left-0 top-0 h-full bg-[#7dd3fc] ${pct >= 100 ? 'rounded-full' : 'rounded-l-full'}`}
           style={{ width: `${pct}%`, transition: 'width 0.6s ease-out' }}
         />
-        <div className="relative z-10 h-full flex items-center gap-2 px-3 sm:px-5">
-          <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-[#e0f2fe] flex items-center justify-center overflow-hidden shrink-0">
-            <Image src={TIER_ICON[skill.status]} alt="" width={32} height={32} className="object-cover" />
+        <div className="relative z-10 h-full flex items-center gap-2 px-2.5 sm:px-4">
+          <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-[#e0f2fe] flex items-center justify-center overflow-hidden shrink-0">
+            <Image src={TIER_ICON[skill.status]} alt="" width={24} height={24} className="object-cover" />
           </div>
-          <span className="text-sm sm:text-lg font-semibold text-[#211f26] whitespace-nowrap">{skill.status}</span>
+          <span className="text-xs sm:text-sm font-semibold text-[#211f26] whitespace-nowrap">{skill.status}</span>
         </div>
       </div>
     </div>
@@ -288,7 +288,7 @@ function BarCard({ skill }: { skill: OverviewSkill }) {
 
 function BarGraphView({ skills }: { skills: OverviewSkill[] }) {
   return (
-    <div className="flex flex-col gap-6 w-full max-w-[824px] mx-auto">
+    <div className="flex flex-col gap-3 w-full max-w-[824px] mx-auto">
       {skills.map((s) => <BarCard key={s.name} skill={s} />)}
     </div>
   )
