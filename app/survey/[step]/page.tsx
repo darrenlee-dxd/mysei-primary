@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { SURVEY_QUESTIONS, SURVEY_QUESTIONS_BY_LEVEL, SURVEY_TIPS_BY_LEVEL, ANSWER_OPTIONS } from '@/data/survey'
 import { useSession } from '@/store/session'
+import { speakText } from '@/lib/speech'
 
 export default function SurveyQuestion({ params }: { params: Promise<{ step: string }> }) {
   const { step } = use(params)
@@ -101,10 +102,8 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
       setIsSpeaking(false)
       return
     }
-    const utt = new SpeechSynthesisUtterance(question.text)
-    utt.onend = () => setIsSpeaking(false)
     setIsSpeaking(true)
-    window.speechSynthesis.speak(utt)
+    speakText(question.text, () => setIsSpeaking(false))
   }
 
   if (!question) return null
@@ -333,9 +332,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                                 setPlayingExample(null)
                               } else {
                                 setPlayingExample(exampleKey)
-                                const utt = new SpeechSynthesisUtterance(example)
-                                utt.onend = () => setPlayingExample(null)
-                                window.speechSynthesis.speak(utt)
+                                speakText(example, () => setPlayingExample(null))
                               }
                             }}
                             className="shrink-0 w-7 h-7 rounded-full bg-[#bfdbfe] flex items-center justify-center hover:bg-blue-300 transition-colors"
