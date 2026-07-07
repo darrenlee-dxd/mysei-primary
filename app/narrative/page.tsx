@@ -6,7 +6,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { NavBar } from '@/components/nav/NavBar'
 import { useSession } from '@/store/session'
-import { EMOTION_REGULATION_NARRATIVE_BY_LEVEL } from '@/data/narrative'
+import { BAND_BADGE_BG, EMOTION_REGULATION_NARRATIVE_BY_LEVEL } from '@/data/narrative'
+import { computeEmotionRegulationScore, getEmotionRegulationBand } from '@/lib/scoring'
 
 function ScrollReveal({
   children,
@@ -53,8 +54,11 @@ function ScrollReveal({
 export default function NarrativePage() {
   const userName = useSession((s) => s.userName)
   const studentLevel = useSession((s) => s.studentLevel)
+  const answers = useSession((s) => s.answers)
   const router = useRouter()
-  const content = EMOTION_REGULATION_NARRATIVE_BY_LEVEL[studentLevel]
+  const score = computeEmotionRegulationScore(answers, studentLevel)
+  const band = getEmotionRegulationBand(score, studentLevel)
+  const content = EMOTION_REGULATION_NARRATIVE_BY_LEVEL[studentLevel][band]
 
   useEffect(() => {
     if (!userName) router.replace('/')
@@ -83,12 +87,12 @@ export default function NarrativePage() {
             <Image src="/assets/narrative-hero-char.png" alt="Emotion Regulation character" fill className="object-contain" />
           </div>
 
-          <span className="px-6 py-3 bg-[#cffafe] text-[#211f26] rounded-full text-base font-semibold">
-            Starting out
+          <span className={`px-6 py-3 ${BAND_BADGE_BG[band]} text-[#211f26] rounded-full text-base font-semibold`}>
+            {band}
           </span>
 
           <p className="text-base sm:text-lg text-[#171717]">
-            From your responses, you are{' '}
+            From your responses,{' '}
             <strong className="font-semibold">{content.statusBlurb}</strong>
           </p>
 
