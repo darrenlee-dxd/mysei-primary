@@ -86,9 +86,9 @@ export default function ProfilePage() {
 
                   <p className="text-sm font-medium text-gray-600">View your past results insights for:</p>
 
-                  <div className="flex flex-col gap-3">
+                  <div className="bg-white rounded-2xl px-4 sm:px-6 py-4 sm:py-5 flex flex-col items-center gap-4 sm:gap-6 w-full">
                     {skill.results.map((result, i) => (
-                      <div key={i} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <div key={i} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 w-full">
                         <div className="flex items-center gap-3 flex-wrap">
                           <span className="text-sm text-gray-700">{result.date}</span>
                           <span
@@ -112,7 +112,7 @@ export default function ProfilePage() {
                       </div>
                     ))}
                     {skill.results.length > 1 && (
-                      <button className="text-sm text-gray-500 hover:text-gray-700 text-left flex items-center gap-1">
+                      <button className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1">
                         View more ↓
                       </button>
                     )}

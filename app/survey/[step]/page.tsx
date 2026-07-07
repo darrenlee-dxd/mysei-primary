@@ -23,7 +23,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
     setTimeout(() => { setShowSheet(false); setSheetClosing(false) }, 320)
   }
   const [isSpeaking, setIsSpeaking] = useState(false)
-  const [playingExample, setPlayingExample] = useState<number | null>(null)
+  const [playingExample, setPlayingExample] = useState<string | null>(null)
   const [questionVisible, setQuestionVisible] = useState(false)
   const [showLeaveDialog, setShowLeaveDialog] = useState(false)
 
@@ -285,7 +285,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
           }}
         >
           <div
-            className="bg-white rounded-t-3xl shadow-xl w-full max-h-[80vh] flex flex-col"
+            className="bg-white rounded-t-3xl shadow-xl w-full max-h-[60vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
             style={{
               animation: sheetClosing
@@ -308,49 +308,56 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
             </div>
 
             {/* Content */}
-            <div className="overflow-y-auto px-6 pb-6 flex flex-col gap-6 items-center">
+            <div className="overflow-y-auto min-h-0 flex-1 px-6 pb-6 flex flex-col gap-6 items-center">
               <div className="w-full max-w-[600px] flex flex-col gap-6">
-                {/* Header */}
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">💭</span>
-                  <h3 className="text-lg font-semibold text-[#5151cd]">{TIPS[stepNum - 1].header}</h3>
-                </div>
+                {TIPS[stepNum - 1].map((section, sectionIdx) => (
+                  <div key={sectionIdx} className="flex flex-col gap-4">
+                    {/* Header */}
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">💭</span>
+                      <h3 className="text-lg font-semibold text-[#5151cd]">{section.header}</h3>
+                    </div>
 
-                {/* Examples list */}
-                <ul className="flex flex-col gap-4">
-                  {TIPS[stepNum - 1].examples.map((example, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <span className="mt-1 w-2 h-2 rounded-full bg-gray-400 shrink-0" />
-                      <p className="flex-1 text-base text-[#211f26] leading-6">{example}</p>
-                      <button
-                        onClick={() => {
-                          window.speechSynthesis.cancel()
-                          if (playingExample === i) {
-                            setPlayingExample(null)
-                          } else {
-                            setPlayingExample(i)
-                            const utt = new SpeechSynthesisUtterance(example)
-                            utt.onend = () => setPlayingExample(null)
-                            window.speechSynthesis.speak(utt)
-                          }
-                        }}
-                        className="shrink-0 w-7 h-7 rounded-full bg-[#bfdbfe] flex items-center justify-center hover:bg-blue-300 transition-colors"
-                        aria-label={playingExample === i ? 'Stop' : 'Read aloud'}
-                      >
-                        {playingExample === i ? (
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="#1e40af">
-                            <rect x="4" y="4" width="16" height="16" rx="2" />
-                          </svg>
-                        ) : (
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                          </svg>
-                        )}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                    {/* Examples list */}
+                    <ul className="flex flex-col gap-4">
+                      {section.examples.map((example, i) => {
+                        const exampleKey = `${sectionIdx}-${i}`
+                        return (
+                        <li key={i} className="flex items-start gap-3">
+                          <span className="mt-1 w-2 h-2 rounded-full bg-gray-400 shrink-0" />
+                          <p className="flex-1 text-base text-[#211f26] leading-6">{example}</p>
+                          <button
+                            onClick={() => {
+                              window.speechSynthesis.cancel()
+                              if (playingExample === exampleKey) {
+                                setPlayingExample(null)
+                              } else {
+                                setPlayingExample(exampleKey)
+                                const utt = new SpeechSynthesisUtterance(example)
+                                utt.onend = () => setPlayingExample(null)
+                                window.speechSynthesis.speak(utt)
+                              }
+                            }}
+                            className="shrink-0 w-7 h-7 rounded-full bg-[#bfdbfe] flex items-center justify-center hover:bg-blue-300 transition-colors"
+                            aria-label={playingExample === exampleKey ? 'Stop' : 'Read aloud'}
+                          >
+                            {playingExample === exampleKey ? (
+                              <svg width="10" height="10" viewBox="0 0 24 24" fill="#1e40af">
+                                <rect x="4" y="4" width="16" height="16" rx="2" />
+                              </svg>
+                            ) : (
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                              </svg>
+                            )}
+                          </button>
+                        </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
 

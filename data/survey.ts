@@ -7,10 +7,15 @@ export interface SurveyQuestion {
   bg: string
 }
 
-export interface SurveyTip {
+export interface SurveyTipSection {
   header: string
   examples: string[]
 }
+
+// Each question's "What does this mean?" sheet can have multiple labelled
+// sections (e.g. "comfortable feelings" vs "what causes them"), so a tip is
+// a list of sections rather than a single header + example list.
+export type SurveyTip = SurveyTipSection[]
 
 // Primary 4 copy (current/default) — Middle Primary content, from "MySEI_MP
 // survey items" (14 Apr 2026). Primary 5 uses the same copy as Primary 4.
@@ -67,64 +72,104 @@ const SURVEY_QUESTIONS_P4: SurveyQuestion[] = [
 ]
 
 const SURVEY_TIPS_P4: SurveyTip[] = [
-  {
-    header: 'Some examples:',
-    examples: [
-      'When I cannot stop smiling, I know I am happy.',
-      'When my heart beats fast and I feel like shouting, I know I am angry.',
-      'When my body feels full of energy, I know I am excited.',
-      'When my heart feels heavy and I feel like crying, I know I am sad.',
-    ],
-  },
-  {
-    header: 'Some examples:',
-    examples: [
-      'I feel happy when I win a game.',
-      'I am excited about going to the adventure park with my family.',
-      'I am angry that my friend took my things without asking first.',
-      'I had a nightmare, and I woke up feeling scared.',
-      'I am sad that my team lost the game.',
-    ],
-  },
-  {
-    header: 'Some examples:',
-    examples: [
-      'When I am excited about a school learning journey, I talk to my family to express my feelings.',
-      'When I am angry because someone took my things without asking first, I count to ten to help myself calm down.',
-      'When I feel frustrated doing my homework, I take a short break before I continue.',
-    ],
-  },
-  {
-    header: 'Some examples of "ways that are helpful for everyone involved":',
-    examples: [
-      'I feel angry when my friend takes my things without asking, but I calmly tell him to ask before borrowing.',
-      'I am scared that my parents will be angry with me for my mistakes, so I talk to them and apologise.',
-      'I am sad that my team lost, so I talk to my teacher. This helps me feel better and prevents her from worrying.',
-    ],
-  },
-  {
-    header: 'Some examples:',
-    examples: [
-      'Some examples of problems: feeling unwell, trouble with schoolwork, feeling left out by friends, or disagreement with friends.',
-      'Some examples of who I can ask for help: family members, teachers, or school counsellors.',
-    ],
-  },
-  {
-    header: 'Some examples of "when to ask for help":',
-    examples: [
-      'When I am not feeling well, I immediately inform my family.',
-      'If I still cannot do my schoolwork after trying a few times, I know it is time to ask for help.',
-      'When I feel left out by my friends for a few weeks and do not know what to do, I know it is time to talk to my teachers.',
-    ],
-  },
-  {
-    header: 'Some examples of "how to ask for help":',
-    examples: [
-      'My friend said something hurtful to me, so I ask for help from my parents by saying, "I am upset about what my friend said. Can we talk about it?"',
-      'I fell and injured myself, so I go to a teacher and say, "I\'ve hurt my knee. Please help me."',
-      'My friend left me out, so I tell my Form Teacher, "I feel hurt because I am being left out. Can we talk about it?"',
-    ],
-  },
+  // Q1: I can name the feelings that I experience.
+  [
+    {
+      header: 'Some examples:',
+      examples: [
+        'When I cannot stop smiling, I know I am happy.',
+        'When my heart beats fast and I feel like shouting, I know I am angry.',
+        'When my body feels full of energy, I know I am excited.',
+        'When my heart feels heavy and I feel like crying, I know I am sad.',
+      ],
+    },
+  ],
+  // Q2: I know what causes me to have comfortable or uncomfortable feelings.
+  [
+    {
+      header: 'Some examples of "comfortable feelings":',
+      examples: ['Happy', 'Excited'],
+    },
+    {
+      header: 'Some examples of "what causes me to have comfortable feelings":',
+      examples: [
+        'I feel happy when I win a game.',
+        'I am excited about going to the adventure park with my family.',
+      ],
+    },
+    {
+      header: 'Some examples of "uncomfortable feelings":',
+      examples: ['Sad', 'Angry', 'Scared'],
+    },
+    {
+      header: 'Some examples of "what causes me to have uncomfortable feelings":',
+      examples: [
+        'I am angry that my friend took my things without asking first.',
+        'I had a nightmare, and I woke up feeling scared.',
+        'I am sad that my team lost the game.',
+      ],
+    },
+  ],
+  // Q3: I know ways to manage my feelings.
+  [
+    {
+      header: 'Some examples:',
+      examples: [
+        'When I am excited about a school learning journey, I talk to my family to express my feelings.',
+        'When I am angry because someone took my things without asking first, I count to ten to help myself calm down.',
+        'When I feel frustrated doing my homework, I take a short break before I continue.',
+      ],
+    },
+  ],
+  // Q4: I manage my uncomfortable feelings using ways that are helpful for everyone involved.
+  [
+    {
+      header: 'Some examples of "ways that are helpful for everyone involved":',
+      examples: [
+        'I feel angry when my friend takes my things without asking, but I calmly tell him to ask before borrowing.',
+        'I am scared that my parents will be angry with me for my mistakes, so I talk to them and apologise.',
+        'I am sad that my team lost, so I talk to my teacher. This helps me feel better and prevents her from worrying.',
+      ],
+    },
+  ],
+  // Q5: When I face problems, I know who I can ask for help.
+  [
+    {
+      header: 'Some examples of problems:',
+      examples: [
+        'Feeling unwell',
+        'Trouble with schoolwork',
+        'Feeling left out by friends',
+        'Disagreement with friends',
+      ],
+    },
+    {
+      header: 'Some examples of "who I can ask for help":',
+      examples: ['Family members', 'Teachers', 'School counsellors'],
+    },
+  ],
+  // Q6: When I face problems, I know when to ask for help.
+  [
+    {
+      header: 'Some examples of "when to ask for help":',
+      examples: [
+        'When I am not feeling well, I immediately inform my family.',
+        'If I still cannot do my schoolwork after trying a few times, I know it is time to ask for help.',
+        'When I feel left out by my friends for a few weeks and do not know what to do, I know it is time to talk to my teachers.',
+      ],
+    },
+  ],
+  // Q7: When I face problems, I know how to ask for help.
+  [
+    {
+      header: 'Some examples of "how to ask for help":',
+      examples: [
+        'My friend said something hurtful to me, so I ask for help from my parents by saying, "I am upset about what my friend said. Can we talk about it?"',
+        'I fell and injured myself, so I go to a teacher and say, "I\'ve hurt my knee. Please help me."',
+        'My friend left me out, so I tell my Form Teacher, "I feel hurt because I am being left out. Can we talk about it?"',
+      ],
+    },
+  ],
 ]
 
 // Primary 6 copy — from "Upper Primary survey items for Big Scale test" (14 Apr 2026).
@@ -174,57 +219,69 @@ const SURVEY_QUESTIONS_P6: SurveyQuestion[] = [
 ]
 
 const SURVEY_TIPS_P6: SurveyTip[] = [
-  {
-    header: 'Some examples:',
-    examples: [
-      'I make a to-do list to organise my tasks.',
-      'I talk to a trusted adult about things that worry me.',
-      'I practise deep breathing exercises to help me calm down.',
-      'I take short breaks between study sessions.',
-    ],
-  },
-  {
-    header: 'Some examples of "how to manage my feelings":',
-    examples: [
-      'I take deep breaths to calm myself down when I am feeling nervous before a test.',
-      'I count to ten before responding to avoid saying something I may regret when I am upset with someone.',
-      'I stay calm and focus on my lesson now when I am excited about the inter-class games later.',
-    ],
-  },
-  {
-    header: 'Some examples:',
-    examples: [
-      'I am excited about joining in a new class, but I also feel nervous about having to make new friends.',
-      'I feel honoured to represent my class for an inter-class competition but also feel pressured to perform well.',
-      'When my best friend moves to another school, I feel sad about him leaving but also happy for his new adventure.',
-    ],
-  },
-  {
-    header: 'Some examples of "who I ask for help":',
-    examples: [
-      'When I feel unwell at home, I can ask someone at home for help.',
-      'When I cannot do my schoolwork, I can ask my teachers for help.',
-      'When I feel left out by my friends, I can talk to the school counsellor to feel better.',
-      'When I have disagreement with my classmates, I can talk to my friends about it.',
-    ],
-  },
-  {
-    header: 'Some examples of "when I ask for help":',
-    examples: [
-      'When I am struggling to understand a new topic and it makes me want to give up, I know it is time for me to ask for help.',
-      'When I am experiencing some friendship problems and my friends refused to listen to me, I know it is time for me to seek help.',
-      'When I am feeling anxious about an upcoming competition and I cannot sleep, I know it is time to talk to someone.',
-    ],
-  },
-  {
-    header: 'Some examples of "how to ask for help":',
-    examples: [
-      'When my friend said something hurtful to me, I tell a trusted adult, "I am upset about what my friend said. Can we talk about it?"',
-      'When I fall and injure myself, I go to a teacher and say, "I\'ve hurt my knee. Please help me."',
-      'When my friend leaves me out, I tell my Form Teacher, "I feel hurt because I am being left out. Can we talk about it?"',
-      'When I see a scary image on the computer, I tell my family members, "I saw something that scared me online. Can you look at it with me?"',
-    ],
-  },
+  [
+    {
+      header: 'Some examples:',
+      examples: [
+        'I make a to-do list to organise my tasks.',
+        'I talk to a trusted adult about things that worry me.',
+        'I practise deep breathing exercises to help me calm down.',
+        'I take short breaks between study sessions.',
+      ],
+    },
+  ],
+  [
+    {
+      header: 'Some examples of "how to manage my feelings":',
+      examples: [
+        'I take deep breaths to calm myself down when I am feeling nervous before a test.',
+        'I count to ten before responding to avoid saying something I may regret when I am upset with someone.',
+        'I stay calm and focus on my lesson now when I am excited about the inter-class games later.',
+      ],
+    },
+  ],
+  [
+    {
+      header: 'Some examples:',
+      examples: [
+        'I am excited about joining in a new class, but I also feel nervous about having to make new friends.',
+        'I feel honoured to represent my class for an inter-class competition but also feel pressured to perform well.',
+        'When my best friend moves to another school, I feel sad about him leaving but also happy for his new adventure.',
+      ],
+    },
+  ],
+  [
+    {
+      header: 'Some examples of "who I ask for help":',
+      examples: [
+        'When I feel unwell at home, I can ask someone at home for help.',
+        'When I cannot do my schoolwork, I can ask my teachers for help.',
+        'When I feel left out by my friends, I can talk to the school counsellor to feel better.',
+        'When I have disagreement with my classmates, I can talk to my friends about it.',
+      ],
+    },
+  ],
+  [
+    {
+      header: 'Some examples of "when I ask for help":',
+      examples: [
+        'When I am struggling to understand a new topic and it makes me want to give up, I know it is time for me to ask for help.',
+        'When I am experiencing some friendship problems and my friends refused to listen to me, I know it is time for me to seek help.',
+        'When I am feeling anxious about an upcoming competition and I cannot sleep, I know it is time to talk to someone.',
+      ],
+    },
+  ],
+  [
+    {
+      header: 'Some examples of "how to ask for help":',
+      examples: [
+        'When my friend said something hurtful to me, I tell a trusted adult, "I am upset about what my friend said. Can we talk about it?"',
+        'When I fall and injure myself, I go to a teacher and say, "I\'ve hurt my knee. Please help me."',
+        'When my friend leaves me out, I tell my Form Teacher, "I feel hurt because I am being left out. Can we talk about it?"',
+        'When I see a scary image on the computer, I tell my family members, "I saw something that scared me online. Can you look at it with me?"',
+      ],
+    },
+  ],
 ]
 
 export const SURVEY_QUESTIONS_BY_LEVEL: Record<PrimaryLevel, SurveyQuestion[]> = {
