@@ -7,6 +7,9 @@ import Link from 'next/link'
 import { NavBar } from '@/components/nav/NavBar'
 import { useSession } from '@/store/session'
 import { SKILLS, STATUS_COLORS } from '@/data/profile'
+import { SURVEY_QUESTIONS_BY_LEVEL } from '@/data/survey'
+import type { SkillBand } from '@/data/narrative'
+import { computeEmotionRegulationScore, getEmotionRegulationBand } from '@/lib/scoring'
 
 export default function ProfilePage() {
   const userName = useSession((s) => s.userName)
@@ -78,13 +81,13 @@ export default function ProfilePage() {
                     </div>
                     <div className="min-w-0">
                       <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{skill.name}</h3>
-                      <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{skill.description}</p>
+                      <p className="text-sm sm:text-base text-gray-500 mt-0.5">{skill.description}</p>
                     </div>
                   </div>
 
                   <hr className="border-gray-200" />
 
-                  <p className="text-sm font-medium text-gray-600">View your past results insights for:</p>
+                  <p className="text-base font-medium text-gray-600">View your past results insights for:</p>
 
                   <div className="bg-white rounded-2xl px-4 sm:px-6 py-4 sm:py-5 flex flex-col items-center gap-4 sm:gap-6 w-full">
                     {skill.results.map((result, i) => (
@@ -134,6 +137,15 @@ type SkillStatus = 'Starting out' | 'Making Progress' | 'Getting There' | 'Doing
 interface OverviewSkill {
   name: string
   status: SkillStatus
+}
+
+// Maps the sentence-case bands used by the survey scoring logic to the
+// title-case statuses used across this overview.
+const BAND_TO_SKILL_STATUS: Record<SkillBand, SkillStatus> = {
+  'Starting out': 'Starting out',
+  'Making progress': 'Making Progress',
+  'Getting there': 'Getting There',
+  'Doing well': 'Doing Well',
 }
 
 const STAR_COUNT: Record<SkillStatus, number> = {
@@ -294,63 +306,45 @@ function BarGraphView({ skills }: { skills: OverviewSkill[] }) {
   )
 }
 
-function ViewToggle({
-  view, onChange,
-}: {
-  view: 'cards' | 'bars'
-  onChange: (v: 'cards' | 'bars') => void
-}) {
-  return (
-    <div className="bg-[#f5f5f5] rounded-lg p-1 flex items-center gap-1">
-      <button
-        onClick={() => onChange('cards')}
-        aria-label="Card view"
-        className={`w-9 h-9 rounded-md flex items-center justify-center transition-colors ${
-          view === 'cards' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
-        }`}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" />
-          <rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" />
-        </svg>
-      </button>
-      <button
-        onClick={() => onChange('bars')}
-        aria-label="Bar graph view"
-        className={`w-9 h-9 rounded-md flex items-center justify-center transition-colors ${
-          view === 'bars' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'
-        }`}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <line x1="4" y1="20" x2="4" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="20" y1="20" x2="20" y2="14" />
-        </svg>
-      </button>
-    </div>
-  )
-}
-
 function OverviewTab() {
   const [view, setView] = useState<'cards' | 'bars'>('cards')
+  const studentLevel = useSession((s) => s.studentLevel)
+  const answers = useSession((s) => s.answers)
+
+  // Only trust the computed score once the student has actually answered
+  // every question — a partial/unstarted survey should fall back to the
+  // placeholder status instead of scoring as "Starting out".
+  const hasAttemptedEmotionRegulation =
+    Object.keys(answers).length >= SURVEY_QUESTIONS_BY_LEVEL[studentLevel].length
+
+  const skills = ALL_SKILLS.map((skill) => {
+    if (skill.name !== 'Emotion Regulation' || !hasAttemptedEmotionRegulation) return skill
+    const score = computeEmotionRegulationScore(answers, studentLevel)
+    const band = getEmotionRegulationBand(score, studentLevel)
+    return { ...skill, status: BAND_TO_SKILL_STATUS[band] }
+  })
 
   return (
     <div className="flex flex-col gap-10">
       {/* Header */}
       <div className="flex flex-col items-center gap-4 text-center">
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Overview of My SE Skills</h2>
-          <ViewToggle view={view} onChange={setView} />
-        </div>
-        <p className="text-gray-500 text-sm px-2">Just like a vibrant garden, your emotional well-being thrives when it's nurtured.</p>
-        <div className="relative w-full max-w-md h-36 sm:h-48 rounded-2xl overflow-hidden">
+        <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">Overview of My SE Skills</h2>
+        <p className="text-gray-500 text-base px-2">Just like a vibrant garden, your emotional well-being thrives when it's nurtured.</p>
+        <button
+          type="button"
+          onClick={() => setView((v) => (v === 'cards' ? 'bars' : 'cards'))}
+          aria-label="Toggle between card and bar graph view"
+          className="relative w-full max-w-md h-36 sm:h-48 rounded-2xl overflow-hidden cursor-pointer transition-transform hover:scale-[1.02] active:scale-[0.98]"
+        >
           <Image src="/assets/dashboard-hero.png" alt="MySEI characters" fill className="object-cover" />
-        </div>
+        </button>
       </div>
 
       <ScrollReveal delay={0}>
         {view === 'cards' ? (
-          <SkillGroup skills={ALL_SKILLS} />
+          <SkillGroup skills={skills} />
         ) : (
-          <BarGraphView skills={ALL_SKILLS} />
+          <BarGraphView skills={skills} />
         )}
       </ScrollReveal>
     </div>
