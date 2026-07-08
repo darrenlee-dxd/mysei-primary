@@ -105,7 +105,7 @@ export default function Dashboard() {
                     <div className="flex flex-col gap-3 sm:gap-4 flex-1 min-w-0">
                       <div className="flex flex-col gap-2">
                         <h4 className="font-semibold text-[#0a0a0a]">{card.title}</h4>
-                        <p className="text-sm text-[#404040] leading-6">{card.description}</p>
+                        <p className="text-base text-[#404040] leading-6">{card.description}</p>
                       </div>
                       <p className="text-sm font-medium text-[#65636d] flex items-center gap-2">
                         <span className="text-sm">📋</span> 6 items
@@ -195,7 +195,7 @@ function ExploreCard({
       </div>
       <div className="p-5 sm:p-6 border border-gray-200 border-t-0 rounded-b-2xl bg-white flex flex-col gap-2">
         <h4 className="font-semibold text-gray-900">{title}</h4>
-        <p className="text-sm text-gray-500">{description}</p>
+        <p className="text-base text-gray-500">{description}</p>
         <div className="mt-2">
           <Link
             href={href}

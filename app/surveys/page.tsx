@@ -100,7 +100,7 @@ export default function SurveysPage() {
         {/* Page header */}
         <div className="text-center flex flex-col gap-2">
           <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">My Surveys</h1>
-          <p className="text-gray-500 text-sm sm:text-base">Only your teacher will see your answers so they know how to help you.</p>
+          <p className="text-gray-500 text-base sm:text-lg">Only your teacher will see your answers so they know how to help you.</p>
         </div>
 
         {/* Info banner */}
@@ -109,8 +109,8 @@ export default function SurveysPage() {
             <Image src="/assets/surveys-cactus.png" alt="Cactus character" fill className="object-contain" />
           </div>
           <div className="bg-gray-100 rounded-2xl px-5 sm:px-6 py-4 sm:py-5 flex-1 text-center sm:text-left">
-            <p className="font-semibold text-gray-800 mb-1">You're always learning and changing</p>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="font-semibold text-gray-800 text-base sm:text-lg mb-1">You're always learning and changing</p>
+            <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
               Answer honestly and think about your experiences at home, in school, and in your community.
             </p>
           </div>
@@ -125,9 +125,9 @@ export default function SurveysPage() {
                   <div className="flex flex-col gap-3">
                     <div>
                       <h3 className="font-semibold text-gray-900 text-base">{card.title}</h3>
-                      <p className="text-sm text-gray-500 mt-1 leading-relaxed">{card.description}</p>
+                      <p className="text-base text-gray-500 mt-1 leading-relaxed">{card.description}</p>
                     </div>
-                    <p className="text-xs text-gray-400 flex items-center gap-1">
+                    <p className="text-sm text-gray-400 flex items-center gap-1">
                       <span>📋</span> 6 items
                     </p>
                   </div>

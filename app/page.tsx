@@ -78,7 +78,7 @@ export default function LoginPage() {
               >
                 Login
               </button>
-              <p className="text-sm text-[#65636d] text-center">
+              <p className="text-base text-[#65636d] text-center">
                 You'll get a one-time login code in your email
               </p>
             </div>

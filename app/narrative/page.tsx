@@ -98,7 +98,7 @@ export default function NarrativePage() {
 
           {/* Summary card */}
           <div className="bg-[#dbeafe] rounded-3xl flex flex-col-reverse sm:flex-row sm:h-[134px] items-center justify-between px-6 sm:px-8 py-6 sm:py-0 w-full overflow-hidden gap-4 sm:gap-0">
-            <p className="text-sm sm:text-base text-[#171717] leading-6 flex-1 text-left">
+            <p className="text-base sm:text-lg text-[#171717] leading-6 flex-1 text-left">
               <strong className="font-semibold">Emotion Regulation</strong>
               {' '}{content.summaryDescription}
             </p>
@@ -293,7 +293,7 @@ function NextSurveyCard({
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <h4 className="text-lg sm:text-xl font-semibold text-[#0a0a0a] truncate">{title}</h4>
-            <p className="text-sm sm:text-base text-[#404040] leading-6 line-clamp-3">{description}</p>
+            <p className="text-base text-[#404040] leading-6 line-clamp-3">{description}</p>
           </div>
           <p className="text-base sm:text-lg font-medium text-[#65636d] flex items-center gap-2">
             <span className="text-base">📋</span> 6 items

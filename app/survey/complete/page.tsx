@@ -66,8 +66,8 @@ export default function SurveyComplete() {
         <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">Survey completed!</h1>
 
         <div className="bg-gray-100 rounded-2xl px-6 sm:px-8 py-5 sm:py-6 max-w-sm">
-          <p className="font-semibold text-gray-800 mb-2">Great job!</p>
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="font-semibold text-gray-800 text-base sm:text-lg mb-2">Great job!</p>
+          <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
             You're growing with every step. It's okay if you're still figuring things out. I am too! 🌱
           </p>
         </div>

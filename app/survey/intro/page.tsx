@@ -39,8 +39,8 @@ export default function SurveyIntro() {
             />
           </div>
           <div className="bg-gray-100 rounded-2xl px-5 sm:px-6 py-4 sm:py-5 flex-1 text-center sm:text-left">
-            <p className="font-semibold text-gray-900 mb-1">You're always learning and changing</p>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="font-semibold text-gray-900 text-base sm:text-lg mb-1">You're always learning and changing</p>
+            <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
               Answer honestly and think about your experiences at home, in school, and in your community.
             </p>
           </div>
@@ -54,7 +54,7 @@ export default function SurveyIntro() {
 
         {/* Skill description card */}
         <div className="bg-[#dbeafe] rounded-2xl px-6 sm:px-8 py-5 sm:py-6 flex flex-col-reverse sm:flex-row items-center gap-4 sm:gap-6 max-w-[720px] w-full">
-          <p className="flex-1 text-gray-800 text-sm sm:text-base leading-relaxed text-center sm:text-left">
+          <p className="flex-1 text-gray-800 text-base sm:text-lg leading-relaxed text-center sm:text-left">
             <strong>Emotion Regulation</strong> is about understanding and managing your feelings.
             When you can manage your feelings, you stay in control of what you say and
             do even when the situation is difficult.
