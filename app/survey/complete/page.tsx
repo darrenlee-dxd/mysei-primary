@@ -8,6 +8,7 @@ import { useSession } from '@/store/session'
 
 export default function SurveyComplete() {
   const userName = useSession((s) => s.userName)
+  const completeEmotionRegulationSurvey = useSession((s) => s.completeEmotionRegulationSurvey)
   const router = useRouter()
   const confettiFired = useRef(false)
 
@@ -18,6 +19,7 @@ export default function SurveyComplete() {
   useEffect(() => {
     if (confettiFired.current) return
     confettiFired.current = true
+    completeEmotionRegulationSurvey()
 
     try {
       const ctx = new AudioContext()

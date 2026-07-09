@@ -13,12 +13,33 @@ import { computeEmotionRegulationScore, getEmotionRegulationBand } from '@/lib/s
 
 export default function ProfilePage() {
   const userName = useSession((s) => s.userName)
+  const studentLevel = useSession((s) => s.studentLevel)
+  const answers = useSession((s) => s.answers)
+  const emotionRegulationCompletedAt = useSession((s) => s.emotionRegulationCompletedAt)
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<'overview' | 'strengths'>('overview')
 
   useEffect(() => {
     if (!userName) router.replace('/')
   }, [userName, router])
+
+  // Only trust the computed score once the student has actually answered
+  // every question — a partial/unstarted survey should fall back to the
+  // placeholder result instead of scoring as "Starting out".
+  const hasAttemptedEmotionRegulation =
+    Object.keys(answers).length >= SURVEY_QUESTIONS_BY_LEVEL[studentLevel].length
+
+  const skills = SKILLS.map((skill) => {
+    if (skill.id !== 'emotion-regulation' || !hasAttemptedEmotionRegulation || !emotionRegulationCompletedAt) {
+      return skill
+    }
+    const score = computeEmotionRegulationScore(answers, studentLevel)
+    const band = getEmotionRegulationBand(score, studentLevel)
+    const date = new Date(emotionRegulationCompletedAt).toLocaleDateString('en-GB', {
+      day: 'numeric', month: 'short', year: 'numeric',
+    })
+    return { ...skill, results: [{ date, status: band }, ...skill.results.slice(1)] }
+  })
 
   return (
     <div className="min-h-screen bg-white">
@@ -73,7 +94,7 @@ export default function ProfilePage() {
             </div>
 
             <div className="flex flex-col gap-4 sm:gap-5">
-              {SKILLS.map((skill) => (
+              {skills.map((skill) => (
                 <div key={skill.id} className="bg-[#f8f9ff] rounded-2xl p-4 sm:p-6 flex flex-col gap-4">
                   <div className="flex items-center gap-3 sm:gap-4">
                     <div className="relative w-11 h-11 sm:w-14 sm:h-14 shrink-0">
