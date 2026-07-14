@@ -59,6 +59,7 @@ export default function NarrativePage() {
   const score = computeEmotionRegulationScore(answers, studentLevel)
   const band = getEmotionRegulationBand(score, studentLevel)
   const content = EMOTION_REGULATION_NARRATIVE_BY_LEVEL[studentLevel][band]
+  const growSectionRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!userName) router.replace('/')
@@ -79,16 +80,12 @@ export default function NarrativePage() {
 
         {/* Hero section */}
         <div className="flex flex-col items-center gap-5 sm:gap-6 text-center max-w-[880px] mx-auto w-full">
-          <h1 className="text-2xl sm:text-[30px] font-semibold text-[#211f26] tracking-tight">
-            Emotion Regulation
-          </h1>
-
           <div className="relative h-[180px] w-[246px] sm:h-[250px] sm:w-[342px]">
             <Image src="/assets/narrative-hero-char.png" alt="Emotion Regulation character" fill className="object-contain" />
           </div>
 
           <span className={`px-6 py-3 ${BAND_BADGE_BG[band]} text-[#211f26] rounded-full text-base font-semibold`}>
-            {band}
+            Emotion Regulation : {band}
           </span>
 
           <p className="text-base sm:text-lg text-[#171717]">
@@ -108,10 +105,24 @@ export default function NarrativePage() {
           </div>
         </div>
 
-        <div className="max-w-[880px] mx-auto w-full h-px bg-[#d0cdd7]" />
+        {/* Scroll-to-next-section divider */}
+        <div className="max-w-[880px] mx-auto w-full flex items-center justify-center gap-4">
+          <div className="hidden sm:block flex-1 h-px bg-[#d0cdd7]" />
+          <button
+            type="button"
+            onClick={() => growSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="flex flex-col items-center gap-2 min-h-10 px-6 py-2.5 rounded-lg text-[#737373] text-sm font-medium hover:bg-gray-100 transition-colors shrink-0"
+          >
+            Scroll down for more
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 5v14M19 12l-7 7-7-7" />
+            </svg>
+          </button>
+          <div className="hidden sm:block flex-1 h-px bg-[#d0cdd7]" />
+        </div>
 
         {/* How can you grow */}
-        <div className="flex flex-col gap-6 sm:gap-10 max-w-[880px] mx-auto w-full">
+        <div ref={growSectionRef} className="flex flex-col gap-6 sm:gap-10 max-w-[880px] mx-auto w-full scroll-mt-20">
           <h2 className="text-xl sm:text-2xl font-semibold text-[#211f26] text-center tracking-tight">
             How can you grow in this skill?
           </h2>
@@ -147,13 +158,11 @@ export default function NarrativePage() {
             </ScrollReveal>
 
             {/* Connector path */}
+            <div className="w-full">
             <ScrollReveal delay={100}>
-            <div className="h-[60px] sm:h-[80px] w-full flex items-center justify-center opacity-20">
-              <svg width="400" height="80" viewBox="0 0 400 80" fill="none" className="w-[240px] sm:w-[400px] h-auto">
-                <path d="M320 0 C320 40, 80 40, 80 80" stroke="#7C3AED" strokeWidth="3" fill="none" strokeDasharray="8 4"/>
-              </svg>
-            </div>
+              <Image src="/assets/narrative-path-connector.svg" alt="" width={880} height={172} className="w-full h-auto" />
             </ScrollReveal>
+            </div>
 
             {/* Tip 2 — offset left */}
             <ScrollReveal direction="left" delay={0}>
@@ -186,13 +195,11 @@ export default function NarrativePage() {
             {content.tip3 && (
               <>
                 {/* Connector path */}
+                <div className="w-full -scale-x-100">
                 <ScrollReveal delay={100}>
-                <div className="h-[60px] sm:h-[80px] w-full flex items-center justify-center opacity-20">
-                  <svg width="400" height="80" viewBox="0 0 400 80" fill="none" className="w-[240px] sm:w-[400px] h-auto -scale-x-100">
-                    <path d="M320 0 C320 40, 80 40, 80 80" stroke="#7C3AED" strokeWidth="3" fill="none" strokeDasharray="8 4"/>
-                  </svg>
-                </div>
+                  <Image src="/assets/narrative-path-connector.svg" alt="" width={880} height={172} className="w-full h-auto" />
                 </ScrollReveal>
+                </div>
 
                 {/* Tip 3 — offset right */}
                 <ScrollReveal direction="right" delay={0}>
