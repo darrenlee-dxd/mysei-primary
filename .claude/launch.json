@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "MySEI Dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "/bin/zsh",
+      "runtimeArgs": ["-l", "-c", "/opt/homebrew/bin/npm run dev"],
       "port": 3000
     }
   ]
