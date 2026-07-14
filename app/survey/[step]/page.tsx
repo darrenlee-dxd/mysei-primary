@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
+import { Sprout } from 'lucide-react'
 import { SURVEY_QUESTIONS, SURVEY_QUESTIONS_BY_LEVEL, SURVEY_TIPS_BY_LEVEL, ANSWER_OPTIONS } from '@/data/survey'
 import { useSession } from '@/store/session'
 import { speakText } from '@/lib/speech'
@@ -27,10 +28,12 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
   const [playingExample, setPlayingExample] = useState<string | null>(null)
   const [questionVisible, setQuestionVisible] = useState(false)
   const [showLeaveDialog, setShowLeaveDialog] = useState(false)
+  const [showSubmitDialog, setShowSubmitDialog] = useState(false)
 
   const questions = SURVEY_QUESTIONS_BY_LEVEL[studentLevel] ?? SURVEY_QUESTIONS
   const TIPS = SURVEY_TIPS_BY_LEVEL[studentLevel]
   const question = questions[stepNum - 1]
+  const isLastQuestion = stepNum === questions.length
 
   useEffect(() => {
     if (!userName) { router.replace('/'); return }
@@ -82,12 +85,17 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
 
   const handleNext = () => {
     if (!selected) return
-    playChime()
-    if (stepNum < questions.length) {
-      router.push(`/survey/${stepNum + 1}`)
-    } else {
-      router.push('/survey/complete')
+    if (isLastQuestion) {
+      setShowSubmitDialog(true)
+      return
     }
+    playChime()
+    router.push(`/survey/${stepNum + 1}`)
+  }
+
+  const handleConfirmSubmit = () => {
+    playChime()
+    router.push('/survey/complete')
   }
 
   const handleBack = () => {
@@ -211,9 +219,10 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                     {question.text}
                   </p>
                 </div>
+                <div className="relative self-start">
                 <button
                   onClick={() => setShowSheet(true)}
-                  className="self-start flex items-center gap-2 bg-[#171717] text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-[#383838] transition-colors"
+                  className="flex items-center gap-2 bg-[#171717] text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-[#383838] transition-colors"
                 >
                   What does this mean?
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -222,6 +231,20 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                     <path d="M12 8h.01" />
                   </svg>
                 </button>
+                {stepNum === 1 && (
+                  <div
+                    className="absolute bottom-full left-0 mb-3 z-20 w-[260px] max-w-[80vw] bg-[#ea580c] text-white rounded-lg p-4 pointer-events-none"
+                    style={{ opacity: 0, animation: 'tooltipFade 5s ease-in-out 2s both' }}
+                  >
+                    <p className="text-base leading-6">
+                      <strong className="font-semibold">Not sure what this means?</strong>
+                      <br />
+                      Click here to see an example!
+                    </p>
+                    <div className="absolute left-6 top-full w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#ea580c]" />
+                  </div>
+                )}
+                </div>
               </div>
             </div>
 
@@ -275,7 +298,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
               disabled={!selected}
               className="flex-1 sm:flex-none px-6 sm:px-16 py-2.5 sm:py-3 rounded-full bg-[#2563eb] text-white text-sm sm:text-base font-medium hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Next
+              {isLastQuestion ? 'Submit' : 'Next'}
             </button>
           </div>
         </div>
@@ -433,6 +456,63 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                 className="flex-1 min-h-[40px] px-6 py-2.5 rounded-full border border-[#d4d4d4] bg-white text-[#0a0a0a] text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm"
               >
                 Keep going
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Submit confirmation dialog */}
+      {showSubmitDialog && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          onClick={() => setShowSubmitDialog(false)}
+          style={{ animation: 'dialogOverlayIn 0.2s ease-out both' }}
+        >
+          <div
+            className="bg-white border border-[#e5e5e5] rounded-[10px] shadow-xl w-full max-w-[400px] flex flex-col items-center overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+            style={{ animation: 'dialogPopIn 0.25s cubic-bezier(0.2,0,0,1) both' }}
+          >
+            {/* Header */}
+            <div className="flex justify-end p-4 w-full">
+              <button
+                onClick={() => setShowSubmitDialog(false)}
+                aria-label="Close"
+                className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors text-gray-500"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="flex flex-col gap-2.5 items-center px-6 pb-6">
+              <div className="bg-emerald-100 rounded-full p-3 flex items-center justify-center">
+                <Sprout size={24} className="text-emerald-700" />
+              </div>
+              <h3 className="text-xl font-semibold text-[#211f26] text-center">
+                All done planting your thoughts?
+              </h3>
+              <p className="text-lg text-[#65636d] text-center leading-[27px]">
+                You can still go back and change any of your answers if you want to.
+              </p>
+            </div>
+
+            {/* Footer */}
+            <div className="flex gap-2 items-center justify-end w-full p-4">
+              <button
+                onClick={() => setShowSubmitDialog(false)}
+                className="flex-1 min-h-[40px] px-6 py-2.5 rounded-full border border-[#d4d4d4] bg-white text-[#0a0a0a] text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm"
+              >
+                Double-check
+              </button>
+              <button
+                onClick={handleConfirmSubmit}
+                className="flex-1 min-h-[40px] px-6 py-2.5 rounded-full bg-[#171717] text-white text-sm font-medium hover:bg-[#383838] transition-colors"
+              >
+                I&apos;m ready!
               </button>
             </div>
           </div>

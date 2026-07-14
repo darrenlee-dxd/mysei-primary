@@ -40,7 +40,7 @@ export default function SurveyIntroStep1() {
           </div>
           <Link
             href="/survey/intro/2"
-            style={{ opacity: 0, animation: 'optionFadeIn 0.5s ease-out 1500ms both' }}
+            style={{ opacity: 0, animation: 'optionFadeIn 0.5s ease-out 750ms both' }}
             className="h-12 px-16 rounded-full bg-[#171717] text-white font-medium text-base flex items-center justify-center hover:bg-[#383838] transition-colors w-full sm:w-[250px]"
           >
             Next

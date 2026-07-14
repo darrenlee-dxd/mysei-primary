@@ -32,7 +32,10 @@ export default function SurveyIntroStep3() {
           <div className="relative w-32 h-32 sm:w-[200px] sm:h-[200px] shrink-0">
             <Image src="/assets/survey-intro-succulent-char.png" alt="MySEI character" fill className="object-contain" />
           </div>
-          <div className="relative bg-[#f2eff3] rounded-3xl px-5 sm:px-6 py-4 sm:py-5 flex-1 text-center sm:text-left">
+          <div
+            className="relative bg-[#f2eff3] rounded-3xl px-5 sm:px-6 py-4 sm:py-5 flex-1 text-center sm:text-left"
+            style={{ opacity: 0, animation: 'optionFadeIn 0.5s ease-out 300ms both' }}
+          >
             <div className="hidden sm:block absolute left-[-10px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent border-r-[10px] border-r-[#f2eff3]" />
             <p className="font-semibold text-[#211f26] text-base sm:text-lg mb-1">You&apos;re always learning and changing</p>
             <p className="text-base sm:text-lg text-[#65636d] leading-relaxed">
@@ -43,7 +46,7 @@ export default function SurveyIntroStep3() {
 
         <Link
           href="/survey/1"
-          style={{ opacity: 0, animation: 'optionFadeIn 0.5s ease-out 1500ms both' }}
+          style={{ opacity: 0, animation: 'optionFadeIn 0.5s ease-out 750ms both' }}
           className="h-12 px-16 rounded-full bg-[#171717] text-white font-semibold text-base flex items-center justify-center hover:bg-[#383838] transition-colors w-full sm:w-[250px]"
         >
           Let&apos;s begin!
