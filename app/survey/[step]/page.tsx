@@ -29,6 +29,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
   const [questionVisible, setQuestionVisible] = useState(false)
   const [showLeaveDialog, setShowLeaveDialog] = useState(false)
   const [showSubmitDialog, setShowSubmitDialog] = useState(false)
+  const [nudge, setNudge] = useState(false)
 
   const questions = SURVEY_QUESTIONS_BY_LEVEL[studentLevel] ?? SURVEY_QUESTIONS
   const TIPS = SURVEY_TIPS_BY_LEVEL[studentLevel]
@@ -47,6 +48,15 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
     const t = setTimeout(() => setQuestionVisible(true), 80)
     return () => clearTimeout(t)
   }, [stepNum, question])
+
+  useEffect(() => {
+    if (showSheet) return
+    const interval = setInterval(() => {
+      setNudge(true)
+      setTimeout(() => setNudge(false), 500)
+    }, 8000)
+    return () => clearInterval(interval)
+  }, [stepNum, showSheet])
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -201,7 +211,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                         <rect x="4" y="4" width="16" height="16" rx="2" />
                       </svg>
                     ) : (
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                         <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                         <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
@@ -222,6 +232,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                 <div className="relative self-start">
                 <button
                   onClick={() => setShowSheet(true)}
+                  style={nudge ? { animation: 'buttonNudge 0.5s ease-in-out' } : undefined}
                   className="flex items-center gap-2 bg-[#171717] text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-[#383838] transition-colors"
                 >
                   What does this mean?
@@ -370,11 +381,11 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                             aria-label={playingExample === exampleKey ? 'Stop' : 'Read aloud'}
                           >
                             {playingExample === exampleKey ? (
-                              <svg width="10" height="10" viewBox="0 0 24 24" fill="#1e40af">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="#1e40af">
                                 <rect x="4" y="4" width="16" height="16" rx="2" />
                               </svg>
                             ) : (
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e40af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                               </svg>

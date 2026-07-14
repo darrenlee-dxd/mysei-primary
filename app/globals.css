@@ -168,3 +168,11 @@
   85%  { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(4px); }
 }
+
+@keyframes buttonNudge {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  20%      { transform: translateX(-1.5px) rotate(-1deg); }
+  40%      { transform: translateX(1.5px) rotate(1deg); }
+  60%      { transform: translateX(-1.5px) rotate(-1deg); }
+  80%      { transform: translateX(1.5px) rotate(1deg); }
+}
