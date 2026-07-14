@@ -100,7 +100,6 @@ export default function SurveysPage() {
         {/* Page header */}
         <div className="text-center flex flex-col gap-2">
           <h1 className="text-2xl sm:text-4xl font-bold text-gray-900">My Surveys</h1>
-          <p className="text-gray-500 text-base sm:text-lg">Only your teacher will see your answers so they know how to help you.</p>
         </div>
 
         {/* Info banner */}
