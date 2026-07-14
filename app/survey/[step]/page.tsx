@@ -92,7 +92,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
 
   const handleBack = () => {
     if (stepNum > 1) router.push(`/survey/${stepNum - 1}`)
-    else router.push('/survey/intro')
+    else router.push('/survey/intro/3')
   }
 
   const handleSpeak = () => {
@@ -146,25 +146,33 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
           <div className="flex gap-2 w-[780px] max-w-full">
             {questions.map((_, i) => {
               const idx = i + 1
-              const isPast = idx < stepNum
               const isActive = idx === stepNum
+              const isAnswered = answers[idx] != null
+              const isFilled = isActive || isAnswered
+              const isClickable = isAnswered && !isActive
               return (
-                <div
+                <button
                   key={i}
-                  className="flex-1 h-3 rounded-full shadow-md overflow-hidden"
+                  type="button"
+                  disabled={!isClickable}
+                  onClick={() => isClickable && router.push(`/survey/${idx}`)}
+                  aria-label={isClickable ? `Go back to question ${idx}` : `Question ${idx}`}
+                  className={`flex-1 h-3 rounded-full shadow-md overflow-hidden transition-transform ${
+                    isClickable ? 'cursor-pointer hover:scale-y-150 focus-visible:scale-y-150' : 'cursor-default'
+                  }`}
                   style={{ backgroundColor: '#f2eff3' }}
                 >
                   <div
                     style={{
                       height: '100%',
                       borderRadius: '9999px',
-                      backgroundColor: isActive ? '#2563eb' : isPast ? '#60a5fa' : 'transparent',
-                      width: isActive || isPast ? '100%' : '0%',
+                      backgroundColor: isActive ? '#2563eb' : isAnswered ? '#60a5fa' : 'transparent',
+                      width: isFilled ? '100%' : '0%',
                       transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease',
                       transitionDelay: isActive ? `${i * 40}ms` : '0ms',
                     }}
                   />
-                </div>
+                </button>
               )
             })}
           </div>

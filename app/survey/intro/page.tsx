@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useSession } from '@/store/session'
 
-export default function SurveyIntro() {
+export default function SurveyIntroStep1() {
   const userName = useSession((s) => s.userName)
   const router = useRouter()
 
@@ -27,55 +27,25 @@ export default function SurveyIntro() {
         </Link>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 gap-6 sm:gap-10 py-8 sm:py-12">
-        {/* Character + speech bubble */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 max-w-[720px] w-full">
-          <div className="relative w-28 h-28 sm:w-44 sm:h-44 shrink-0">
-            <Image
-              src="/assets/survey-intro-char.png"
-              alt="MySEI character"
-              fill
-              className="object-contain"
-            />
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-12">
+        <div className="bg-[#dbeafe] rounded-3xl px-6 sm:px-12 py-8 sm:py-12 flex flex-col items-center gap-6 sm:gap-8 max-w-[720px] w-full">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+            <div className="relative w-20 h-20 sm:w-[140px] sm:h-[140px] shrink-0">
+              <Image src="/assets/survey-er-v2.png" alt="" fill className="object-contain" />
+            </div>
+            <h1 className="text-xl sm:text-[30px] font-semibold text-[#404040] leading-snug text-center sm:text-left">
+              You are about to do a survey about your{' '}
+              <span className="text-[#1d4ed8]">Emotion Regulation</span> skill
+            </h1>
           </div>
-          <div className="bg-gray-100 rounded-2xl px-5 sm:px-6 py-4 sm:py-5 flex-1 text-center sm:text-left">
-            <p className="font-semibold text-gray-900 text-base sm:text-lg mb-1">You're always learning and changing</p>
-            <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
-              Answer honestly and think about your experiences at home, in school, and in your community.
-            </p>
-          </div>
+          <Link
+            href="/survey/intro/2"
+            style={{ opacity: 0, animation: 'optionFadeIn 0.5s ease-out 1500ms both' }}
+            className="h-12 px-16 rounded-full bg-[#171717] text-white font-medium text-base flex items-center justify-center hover:bg-[#383838] transition-colors w-full sm:w-[250px]"
+          >
+            Next
+          </Link>
         </div>
-
-        {/* Heading */}
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 text-center max-w-[620px] leading-snug">
-          You are about to do a survey about your{' '}
-          <span className="text-[#2563eb]">Emotion Regulation</span> skill
-        </h1>
-
-        {/* Skill description card */}
-        <div className="bg-[#dbeafe] rounded-2xl px-6 sm:px-8 py-5 sm:py-6 flex flex-col-reverse sm:flex-row items-center gap-4 sm:gap-6 max-w-[720px] w-full">
-          <p className="flex-1 text-gray-800 text-base sm:text-lg leading-relaxed text-center sm:text-left">
-            <strong>Emotion Regulation</strong> is about understanding and managing your feelings.
-            When you can manage your feelings, you stay in control of what you say and
-            do even when the situation is difficult.
-          </p>
-          <div className="relative w-16 h-16 sm:w-24 sm:h-24 shrink-0">
-            <Image
-              src="/assets/skill-er.png"
-              alt="Emotion Regulation"
-              fill
-              className="object-contain"
-            />
-          </div>
-        </div>
-
-        {/* CTA */}
-        <Link
-          href="/survey/1"
-          className="h-12 px-16 rounded-full bg-[#171717] text-white font-semibold text-base flex items-center justify-center hover:bg-[#383838] transition-colors w-full sm:w-auto"
-        >
-          Let's begin!
-        </Link>
       </main>
     </div>
   )
