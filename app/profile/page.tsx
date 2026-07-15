@@ -224,7 +224,7 @@ const CAN_BODY_PATH = `M ${CAN_BODY.x} ${CAN_BODY.y}
 const CAN_COLOR = {
   filledMain: '#17A3E0', filledHighlight: '#98D8F4', filledShade: '#167DB8',
   emptyMain: '#CBD5E1', emptyHighlight: '#E2E8F0', emptyShade: '#94A3B8',
-  rim: '#A6DEF9', hole: '#1B628E',
+  rim: '#E2E8F0', hole: '#1B628E',
 }
 
 // Builds a rippled waterline: a horizontal run of alternating bezier humps
@@ -272,7 +272,7 @@ function WateringCanIcon({ status }: { status: SkillStatus }) {
         <path
           d="M 1350 920 C 1650 950, 1820 1080, 1770 1330 C 1740 1500, 1600 1580, 1350 1600"
           fill="none"
-          stroke={CAN_COLOR.filledMain}
+          stroke={CAN_COLOR.emptyShade}
           strokeWidth="115"
           strokeLinecap="round"
         />
@@ -281,11 +281,11 @@ function WateringCanIcon({ status }: { status: SkillStatus }) {
         <path
           d="M 270 430 Q 550 660 950 1000"
           fill="none"
-          stroke={CAN_COLOR.filledMain}
+          stroke={CAN_COLOR.emptyShade}
           strokeWidth="142"
           strokeLinecap="round"
         />
-        <ellipse cx="255" cy="425" rx="72" ry="50" fill={CAN_COLOR.filledHighlight} transform="rotate(-40 255 425)" />
+        <ellipse cx="255" cy="425" rx="72" ry="50" fill={CAN_COLOR.emptyHighlight} transform="rotate(-40 255 425)" />
         <g fill={CAN_COLOR.hole}>
           <circle cx="225" cy="400" r="9" />
           <circle cx="260" cy="392" r="9" />

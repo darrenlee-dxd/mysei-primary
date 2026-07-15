@@ -30,7 +30,7 @@ export default function SurveyIntroStep3() {
       <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 gap-8 sm:gap-10 py-8 sm:py-12">
         <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-2 max-w-[720px] w-full">
           <div className="relative w-32 h-32 sm:w-[200px] sm:h-[200px] shrink-0">
-            <Image src="/assets/survey-intro-succulent-char.png" alt="MySEI character" fill className="object-contain" />
+            <Image src="/assets/succulent2.png" alt="MySEI character" fill className="object-contain" />
           </div>
           <div
             className="relative bg-[#f2eff3] rounded-3xl px-5 sm:px-6 py-4 sm:py-5 flex-1 text-center sm:text-left"
