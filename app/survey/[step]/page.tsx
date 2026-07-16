@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect, useRef, use } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { Sprout } from 'lucide-react'
@@ -16,9 +16,12 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
   const studentLevel = useSession((s) => s.studentLevel)
   const answers = useSession((s) => s.answers)
   const setAnswer = useSession((s) => s.setAnswer)
+  const markQuestionHelpHintSeen = useSession((s) => s.markQuestionHelpHintSeen)
   const [selected, setSelected] = useState<string | null>(null)
   const [showSheet, setShowSheet] = useState(false)
   const [sheetClosing, setSheetClosing] = useState(false)
+  const [showHelpHint, setShowHelpHint] = useState(false)
+  const helpHintDecidedRef = useRef(false)
 
   const closeSheet = () => {
     setSheetClosing(true)
@@ -48,6 +51,14 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
     const t = setTimeout(() => setQuestionVisible(true), 80)
     return () => clearTimeout(t)
   }, [stepNum, question])
+
+  useEffect(() => {
+    if (stepNum !== 1 || helpHintDecidedRef.current) return
+    helpHintDecidedRef.current = true
+    if (useSession.getState().hasSeenQuestionHelpHint) return
+    setShowHelpHint(true)
+    markQuestionHelpHintSeen()
+  }, [stepNum, markQuestionHelpHintSeen])
 
   useEffect(() => {
     if (showSheet) return
@@ -242,7 +253,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                     <path d="M12 8h.01" />
                   </svg>
                 </button>
-                {stepNum === 1 && (
+                {showHelpHint && (
                   <div
                     className="absolute bottom-full left-0 mb-3 z-20 w-[260px] max-w-[80vw] bg-[#ea580c] text-white rounded-lg p-4 pointer-events-none"
                     style={{ opacity: 0, animation: 'tooltipFade 5s ease-in-out 2s both' }}
@@ -481,7 +492,7 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
           style={{ animation: 'dialogOverlayIn 0.2s ease-out both' }}
         >
           <div
-            className="bg-white border border-[#e5e5e5] rounded-[10px] shadow-xl w-full max-w-[400px] flex flex-col items-center overflow-hidden"
+            className="bg-white border border-[#e5e5e5] rounded-[10px] shadow-xl w-full max-w-[600px] flex flex-col items-center overflow-hidden"
             onClick={(e) => e.stopPropagation()}
             style={{ animation: 'dialogPopIn 0.25s cubic-bezier(0.2,0,0,1) both' }}
           >
@@ -504,10 +515,10 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                 <Sprout size={24} className="text-emerald-700" />
               </div>
               <h3 className="text-xl font-semibold text-[#211f26] text-center">
-                All done planting your thoughts?
+                Great job! You&rsquo;re almost done.
               </h3>
               <p className="text-lg text-[#65636d] text-center leading-[27px]">
-                You can still go back and change any of your answers if you want to.
+                Before you submit, you can review your responses. If you aren&apos;t sure about a question, try reading the examples in &quot;What does it mean?&quot; to help you out.
               </p>
             </div>
 
@@ -517,13 +528,13 @@ export default function SurveyQuestion({ params }: { params: Promise<{ step: str
                 onClick={() => setShowSubmitDialog(false)}
                 className="flex-1 min-h-[40px] px-6 py-2.5 rounded-full border border-[#d4d4d4] bg-white text-[#0a0a0a] text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm"
               >
-                Double-check
+                Review my responses
               </button>
               <button
                 onClick={handleConfirmSubmit}
                 className="flex-1 min-h-[40px] px-6 py-2.5 rounded-full bg-[#171717] text-white text-sm font-medium hover:bg-[#383838] transition-colors"
               >
-                I&apos;m ready!
+                I&apos;m ready to submit
               </button>
             </div>
           </div>

@@ -118,11 +118,10 @@ export default function NarrativePage() {
             Emotion Regulation
           </h1>
 
-          <span className={`px-6 py-3 ${BAND_BADGE_BG[band]} text-[#211f26] rounded-full text-xl sm:text-2xl font-semibold`}>
-            {band}
-          </span>
-
-          <Leaves band={band} />
+          <div className={`px-6 py-3 ${BAND_BADGE_BG[band]} text-[#211f26] rounded-full flex flex-col items-center gap-1.5`}>
+            <span className="text-xl sm:text-2xl font-semibold">{band}</span>
+            <Leaves band={band} />
+          </div>
 
           <div className="relative h-[180px] w-[246px] sm:h-[250px] sm:w-[342px]">
             <Image src="/assets/narrative-hero-char.png" alt="Emotion Regulation character" fill className="object-contain" />
@@ -146,7 +145,7 @@ export default function NarrativePage() {
         </div>
 
         {/* Scroll-to-next-section divider */}
-        <div className="max-w-[880px] mx-auto w-full flex items-center justify-center gap-4">
+        <div className="max-w-[880px] mx-auto w-full flex items-center justify-center gap-4 -mt-6 sm:-mt-10">
           <div className="hidden sm:block flex-1 h-px bg-[#d0cdd7]" />
           <button
             type="button"
